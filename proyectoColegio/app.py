@@ -18,7 +18,7 @@ def conectar():
     return conexion, cursor
 
 
-#paginas
+#paginas con formulario
 @app.route("/agregarAlumno", methods=["GET", "POST"])
 def formularioAlumnos():
     aga = agregarAlumno(request.form)
@@ -59,9 +59,15 @@ def formularioProfesor():
     return render_template("agregarProfesor.html", agp=agp)
         
 
-@app.route("/inicio")
+
+#paginas enlace
+@app.route("/")
 def inicio():
     return render_template("inicio.html")
-    
+
+@app.route("/administrar")
+def admin():
+    return render_template("administracion.html") 
+   
 if __name__ == '__main__':
     app.run(debug=True)

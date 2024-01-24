@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title%}Administracion de salones{% endblock %}
+{%block content%}  
+
+<div>
+    <div>
+        <table>
+            <h2>Alumnos: </h2>
+            <a>Lista de alumnos</a><br/>
+            <a href="{{url_for('formularioAlumnos')}}">Registrar</a><br/>
+            <a>Actualizar información del alumno</a><br/>
+            <a>Borrar alumno de la lista</a><br/>
+        </table>
+    </div>
+    <br/><br/><br/>
+
+    <div>
+        <h2>Profesores: </h2>
+        <a>Lista de profesores</a><br/>
+        <a href="{{url_for('formularioProfesor')}}">Registrar</a><br/>
+        <a>Actualizar información del profesor</a><br/>
+        <a>Borrar profesor de la lista</a><br/>
+    </div>    
+</div>
+
+
+{% endblock %}
