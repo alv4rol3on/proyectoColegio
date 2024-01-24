@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+}
+
+body{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+    background-color: white;
+    color: white;
+}
+
+header {
+    background-color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 30px;
+    color: aliceblue;
+}
+
+.container {
+    display: flex;
+    background-color: darkgreen;
+}
+
+.links{  
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    text-align: center;
+    background-color: rgb(37, 34, 34);
+    padding: 15px;
+    width: 120px;
+}
+
+.links a{
+    color: white;
+    text-decoration: none;
+}
+
+.links a:hover{
+    color: rgb(148, 1, 1);
+}
+
+.divform {
+    justify-content: center;
+}
+
+.formulario {
+    background-color: rgb(120, 160, 95);
+}
+
+.formulario legend{
+    color: black;
+    background-color: rgb(255, 255, 255);
+}
+
+input {
+    font-size: 18px;
+}
+
+select {
+    font-size: 18px;
+}
+
+#boton {
+    padding: auto;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: aliceblue;
+    background-color: rgb(0, 0, 0);
+}
+
+#boton:hover {
+    padding: auto;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: black;
+    background-color: aliceblue;
+}
+
+.footer{
+    color: white;
+    background-color: black;
+    padding: 15px;
+}
+

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title%}Agregar alumno{% endblock %}
+{%block content%}  
+
+    <form method="POST">
+        {{aga.hidden_tag()}}
+        {{aga.nombre.label}}{{aga.nombre}}<br><br>
+        {{aga.apellido.label}}{{aga.apellido}}<br><br>
+        {{aga.grado.label}}{{aga.grado}}<br><br>
+        {{aga.seccion.label}}{{aga.seccion}}<br><br>
+        {{aga.boton}}
+    </form>
+
+{% endblock %}
