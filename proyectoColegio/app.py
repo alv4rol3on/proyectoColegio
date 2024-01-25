@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import *
 from flask_wtf import *
-from forms import agregarAlumno, agregarProfe
+from forms import agregarAlumno, agregarProfe, borrar
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikeysecreta'
@@ -18,13 +18,15 @@ def conectar():
     return conexion, cursor
 
 
-#paginas con formulario
+#PAGINAS CON FORMULARIO ALUMNO
 @app.route("/agregarAlumno", methods=["GET", "POST"])
 def formularioAlumnos():
     aga = agregarAlumno(request.form)
     if request.method == "POST" and aga.validate:
-        nombre = aga.nombre.data
-        apellido = aga.apellido.data
+        nombre = aga.nombres.data
+        apellidoPa = aga.apellidoPaterno.data
+        apellidoMa = aga.apellidoMaterno.data
+        nroApo = aga.nroApoderado.data
         grado = aga.grado.data
         seccion = aga.seccion.data
         
@@ -43,9 +45,19 @@ def formularioAlumnos():
             conexion.close()
             return redirect("inicio")
         
-    return render_template("agregarAlumno.html", aga=aga)
+    return render_template("agregarAlumno.html", aga=aga) 
 
-
+@app.route("/borrarAlumno", methods=["GET", "POST"])
+def borrarAlumnos():
+    ba = borrar(request.form)
+    if request.method == "POST" and ba.validate:
+        id = ba.id.data
+        
+        #registro de base de datos
+    
+    return render_template("borrarAlumno.html", ba=ba)    
+    
+#PAGINAS CON FORMULARIO PROFESOR
 @app.route("/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
     agp = agregarProfe(request.form)
