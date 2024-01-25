@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, EmailField, SelectField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, Length
 
 salones = [("3 años", "3 años"), ("4 años", "4 años"), ("5 años", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
             ("3ro prim", "3ro prim"), ("4to prim", "4to prim"), ("5to prim", "5to prim"), ("6to prim", "6to prim"),
@@ -22,6 +22,7 @@ class agregarAlumno(FlaskForm):
     nombres = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese los nombres del estudiante", "size":30})
     apellidoPaterno = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el apellido paterno"})
     apellidoMaterno = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el apellido materno"})
+    dni = IntegerField(validators=[DataRequired(), Length(min=9, max=9)], render_kw={"placeholder": "Ingrese el dni"})
     grado = SelectField("Grado del alumno: ", choices=salones)   
     seccion = SelectField("Seccion: ", choices=[("A", "A"), ("B", "B")])
     nroApoderado = IntegerField(validators=[DataRequired()], render_kw={"placeholder": "Telefono del padre, madre o apoderado"})   
@@ -29,4 +30,8 @@ class agregarAlumno(FlaskForm):
     
 class borrar(FlaskForm):
     id = IntegerField("Id de la persona: ", validators=[DataRequired()])  
-    boton = SubmitField("Borrar de los registros")      
+    boton = SubmitField("Borrar de los registros")     
+    
+class filtro(FlaskForm):
+    grado = SelectField("Grado del alumno: ", choices=salones)    
+    buscar = SubmitField("Buscar")

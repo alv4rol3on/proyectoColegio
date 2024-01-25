@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block title%}Lista de alumnos{% endblock %} {%block
+    content%}
+    <br />
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Nombre completo</th>
+                <th>DNI</th>
+                <th>Telefono del apoderado</th>
+                <th>Grado</th>
+                <th>Sección</th>
+                <th>Estado del alumno</th>                              
+            </tr>
+            {%for info in listado%}
+            <tr>
+                <td>{{info.id}}</td>
+                <td>{{info.nombreCompleto}}</td>
+                <td>{{info.dni}}</td>
+                <td>{{info.telf}}</td>
+                <td>{{info.grado}}</td>
+                <td>{{info.seccion}}</td>
+                <td>{{info.estado}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    <br /><br />
+    {% endblock %}
