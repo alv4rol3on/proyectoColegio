@@ -5,28 +5,12 @@ content %}
     <legend>Registrar un nuevo profesor</legend>
     <form method="POST">
       {{agp.hidden_tag()}} {{agp.nombres}}<br /><br />
-      {{agp.apellido}}<br /><br />
-      {{agp.telefono}} <br /><br />
-      {{agp.email}}<br /><br />
-      <label >Materias de enseñanza: </label><br/>
-      <input type="checkbox" name="cursos[]" value="aritmetica"/>aritmetica
-      <input type="checkbox" name="cursos[]" value="geometria"/>geometria
-      <input type="checkbox" name="cursos[]" value="trigonometría"/>trigonometría<br/>
-      <input type="checkbox" name="cursos[]" value="biologia"/>biologia
-      <input type="checkbox" name="cursos[]" value="historia universal"/>historia universal
-      <input type="checkbox" name="cursos[]" value="historia del Peru"/>historia del Peru<br/>
-      <input type="checkbox" name="cursos[]" value="gramatica"/>gramatica
-      <input type="checkbox" name="cursos[]" value="literatura"/>literatura
-      <input type="checkbox" name="cursos[]" value="plan lector"/>plan lector
-      </br></br>
-      {{agp.salon.label}}{{agp.salon}}<br /><br />
+      {{agp.dni}}
+      {{agp.nro}} <br /><br />
+      {{agp.grado.label}}{{agp.grado}}<br /><br />
       {{agp.boton}}
     </form>
   </fieldset><br><br>
-
-  <div class="eliminar">
-    <h3>a</h3>
-  </div>
   
 
 

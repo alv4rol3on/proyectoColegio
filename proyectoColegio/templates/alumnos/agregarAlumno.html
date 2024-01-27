@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block title%}Agregar alumno{% endblock %} {%block
+content%}
+<br />
+<fieldset class="formulario">
+  <legend>Registrar un nuevo alumno</legend>
+  <form method="POST">
+    {{aga.hidden_tag()}}{{aga.nombres}}<br />
+    {{aga.apellidoPaterno}}{{aga.apellidoMaterno}}<br />
+    {{aga.dni}}{{aga.nro}}<br /><br />
+    {{aga.grado.label}}{{aga.grado}}<br /><br />
+    {{aga.seccion.label}}{{aga.seccion}}<br /><br />
+    {{aga.boton}}
+  </form>
+</fieldset>
+<br /><br />
+{% endblock %}

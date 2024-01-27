@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block title%}Agregar alumno{% endblock %} {%block
+    content%}
+    <br />
+    <fieldset class="formulario">
+      <legend>Actualizar información del alumno</legend>
+      <form method="POST">
+        {{act.hidden_tag()}}
+        {{act.id}}<br /><br />
+        {{act.nombres}}<br />
+        {{act.apellidoPaterno}}{{act.apellidoMaterno}}<br />
+        {{act.dni}}{{act.nro}}<br /><br />
+        {{act.grado.label}}{{act.grado}}<br /><br />
+        {{act.seccion.label}}{{act.seccion}}<br /><br />
+        {{act.estado.label}}{{act.estado}}<br /><br />
+        {{act.boton}}
+      </form>
+    </fieldset>
+    <br /><br />
+    {% endblock %}
