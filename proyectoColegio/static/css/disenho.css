@@ -1,3 +1,4 @@
+/*BASE*/
 * {
     margin: 0;
 }
@@ -16,6 +17,8 @@ header {
     color: aliceblue;
 }
 
+
+/*ADMIN*/
 .container {
     display: flex;
     background-color: darkgreen;
@@ -68,6 +71,8 @@ header {
     justify-content: center;
 }
 
+/*formularios*/
+
 .formulario {
     background-color: rgb(120, 160, 95);
 }
@@ -104,6 +109,101 @@ select {
     color: black;
     background-color: aliceblue;
 }
+
+
+/*PROFESORES*/
+/*LISTA*/
+.nuevo {
+    background-color: rgb(129, 177, 58);
+    color: aliceblue;
+    border-color: black;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.nuevo:hover{
+    background-color: aliceblue;
+    color: rgb(129, 177, 58);
+    border-color: black;
+    font-size: 20px;    
+}
+
+.Tabla {
+    background-color: black;
+}
+
+.encabezado {
+    color: azure;
+    background-color: brown;
+}
+
+.encabezado2 {
+    color: azure;
+    background-color: rgb(37, 33, 123);
+}
+
+.Tabla td{
+    color: black;
+    background-color: azure;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*FOOTER*/
 
 .footer{
     color: white;

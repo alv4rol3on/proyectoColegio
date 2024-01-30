@@ -36,49 +36,31 @@ def formularioAlumnos():
             cursor.execute(
                 f"""
                 INSERT INTO `proyectocole`.`alumno` (`nombreCompleto`, `tipoUsuario`, `dni`, `telf`, `grado`, `seccion`, `estado`)
-                VALUES ('{aga.apellidoPaterno.data + " "+ aga.apellidoMaterno.data+ ", " + aga.nombres.data}', '{3}', '{aga.dni.data}', '{aga.nro.data}', '{aga.grado.data}', '{aga.seccion.data}', 'alumno');
+                VALUES ('{aga.apellidoPaterno.data + " "+ aga.apellidoMaterno.data+ ", " + aga.nombres.data}', '{3}', '{aga.dni.data}', '{aga.nro.data}', '{aga.grado.data}', '{aga.seccion.data}', {1});
                 """)
             conexion.commit()
         except:
             print("ERROR A: ERROR AL INSERTAR UN NUEVO ALUMNO")
         finally:
             conexion.close()
-            return redirect(url_for("inicio"))
+            return redirect(url_for("alumnos"))
         
     return render_template("alumnos/agregarAlumno.html", aga=aga) 
 
-@app.route("/borrarAlumno", methods=["GET", "POST"])
-def borrarAlumnos():
-    ba = borrar(request.form)
-    if request.method == "POST" and ba.validate:
-        id = ba.id.data
-        
-        #registro de base de datos
-        try:
-            conexion, cursor = conectar()
-            cursor.execute(
-                f"""
-                UPDATE `proyectocole`.`alumno` SET `estado` = 'retirado' WHERE `id` = {ba.id.data};
-                """)
-            conexion.commit()
-        except:
-            print("ERROR B: ERROR AL CAMBIAR ESTADO DEL ALUMNO")
-        finally:
-            conexion.close()
-            return redirect(url_for("inicio"))
-            
-    return render_template("alumnos/borrarAlumno.html", ba=ba)    
+@app.route("/xAlumno/<int:id>", methods=["GET", "POST"])
+def deshabilitarAlumno(id):
+    deshAlumno(id)
+    return redirect(url_for("alumnos"))
 
-@app.route("/listaDeAlumnos", methods=["GET", "POST"])     
-def listaAlumnos():
+@app.route("/alumnos", methods=["GET", "POST"])     
+def alumnos():            
     listado = listar()
     return render_template("alumnos/listaAlumnos.html", listado = listado)
  
-@app.route("/actualizarAlumno", methods=["GET", "POST"])
-def actAlumnos():
+@app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
+def actAlumnos(id):
     act = losforms(request.form)
     if request.method == "POST" and act.validate:
-        id = act.id.data
         dni = act.dni.data  
         nombre = act.nombres.data
         apellidoPa = act.apellidoPaterno.data
@@ -96,7 +78,7 @@ def actAlumnos():
                UPDATE `proyectocole`.`alumno`
                 SET `nombreCompleto` = '{act.apellidoPaterno.data + " "+ act.apellidoMaterno.data+ ", " + act.nombres.data}', `dni` = {act.dni.data},
                 `telf` = {act.nro.data}, `grado` = '{act.grado.data}', `seccion` = '{act.seccion.data}', `estado` = '{act.estado.data}'
-                WHERE `id` = {act.id.data};
+                WHERE `id` = {id};
                 """)
             conexion.commit()
         except:
@@ -111,30 +93,83 @@ def actAlumnos():
 @app.route("/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
     agp = losforms(request.form)
-    if request.form == "POST" and agp.validate:
-        nombres = agp.nombres.data
+    if request.method == "POST" and agp.validate:
+        nombre = agp.nombres.data
+        apellidoPa = agp.apellidoPaterno.data
+        apellidoMa = agp.apellidoMaterno.data
         dni = agp.dni.data
         nro = agp.nro.data
-        grado = agp.grado.data
-        #cursosSeleccionados = request.form.getlist('cursos')
-        #listaCursos = ', '.join(cursosSeleccionados)
+        tutoria = agp.tutor.data
         
         #conexion a base de datos
         try:
             conexion, cursor = conectar()
             cursor.execute(
                 f"""
-                INSERT INTO `proyectocole`.`profesor` (`nombreCompleto`, `tipoUsuario`, `dni`, `telefono`, `tutoria`, `estado`)
-                VALUES('{agp.nombres.data}', '{2}', '{agp.dni.data}', '{agp.nro.data}', '{agp.grado.data}', 'profesor');
-                """)
+                INSERT INTO `proyectocole`.`profesor`
+                (`nombreCompleto`, `tipoUsuario`, `dni`, `telefono`, `tutoria`, `estado`)
+                VALUES
+                ('{agp.apellidoPaterno.data + " "+ agp.apellidoMaterno.data+ ", " + agp.nombres.data}', '{2}', '{agp.dni.data}', '{agp.nro.data}',
+                '{agp.tutor.data}', '{1}');
+                """
+            )
             conexion.commit()  
         except:
-            print("ERROR A2: ERROR AL INSERTAR UN NUEVO PROFESOR")   
+            print("ERROR A02: ERROR AL INSERTAR UN NUEVO PROFESOR")   
         finally:
             conexion.close()
             return redirect(url_for("inicio"))      
  
-    return render_template("agregarProfesor.html", agp=agp)
+    return render_template("profesores/agregarProfesor.html", agp=agp)
+
+@app.route("/profesores", methods=["GET", "POST"])     
+def profesores():
+    listadoProfesores = listarProfesor()
+    return render_template("profesores/listaProfesores.html", listadoProfesores = listadoProfesores)
+
+@app.route("/xProfesor/<int:id>", methods=["GET", "POST"])
+def deshabilitarProfesor(id):
+    deshProfesor(id)
+    return redirect(url_for("profesores"))
+
+@app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
+def actProfesor(id):
+    acp = losforms(request.form)
+    if request.method == "POST" and acp.validate:
+        nombre = acp.nombres.data
+        apellidoPa = acp.apellidoPaterno.data
+        apellidoMa = acp.apellidoMaterno.data
+        dni = acp.dni.data
+        nro = acp.nro.data
+        tutoria = acp.tutor.data
+        estado = acp.estado.data
+        
+        #conexion a base de datos
+        try:
+            conexion, cursor = conectar()
+            cursor.execute(
+                f"""
+                UPDATE `proyectocole`.`profesor`
+                SET `nombreCompleto` = '{acp.apellidoPaterno.data + " "+ acp.apellidoMaterno.data+ ", " + acp.nombres.data}',
+                `dni` = '{acp.dni.data}', `telefono` = '{acp.nro.data}',
+                `tutoria` = '{acp.tutor.data}', `estado` = '{acp.estado.data}'>
+                WHERE `id` = {id};
+                """
+            )
+            conexion.commit()  
+        except:
+            print("ERROR A02: ERROR AL ACTUALIZAR UN NUEVO PROFESOR")   
+        finally:
+            conexion.close()
+            return redirect(url_for("profesores"))      
+ 
+    return render_template("profesores/agregarProfesor.html", acp=acp)
+    
+
+#PAGINAS DE HORARIO
+@app.route("/horarios")
+def paginaHorario():
+    return render_template("horarios/pagHorarios.html")
 
 #paginas enlace
 @app.route("/")
@@ -144,7 +179,7 @@ def inicio():
 @app.route("/administrar")
 def admin():
     return render_template("administracion.html") 
-  
+   
   
 #otras funciones  
 def listar():
@@ -158,9 +193,45 @@ def listar():
     conexion.close()
         
     return lista    
-      
+  
+def listarProfesor():
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        SELECT `profesor`.`id`, `profesor`.`nombreCompleto`,
+        `profesor`.`dni`, `profesor`.`telefono`, `profesor`.`tutoria`, `profesor`.`estado`
+        FROM `proyectocole`.`profesor`;
+        """)
+    listaProfesores = cursor.fetchall()
+    conexion.close()
+    
+    return listaProfesores         
 
+def deshAlumno(id):
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        UPDATE `proyectocole`.`alumno`
+        SET `estado` = 0
+        WHERE `id` = '{id}';
+        """
+    )
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
-            
+def deshProfesor(id):
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        UPDATE `proyectocole`.`profesor`
+        SET `estado` = 0
+        WHERE `id` = '{id}';
+        """        
+    )    
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+                
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,15 +1,18 @@
 {% extends 'base.html' %} {% block title%}Lista de alumnos{% endblock %} {%block
     content%}
     <br />
-        <table border="1">
-            <tr>
+    <a class="nuevo" href="{{url_for('formularioAlumnos')}}">Agregar nuevo alumno</a><br><br>
+
+        <table border="0" class="Tabla">
+            <tr class="encabezado">
                 <th>ID</th>
                 <th>Nombre completo</th>
                 <th>DNI</th>
                 <th>Telefono del apoderado</th>
                 <th>Grado</th>
                 <th>Sección</th>
-                <th>Estado del alumno</th>                              
+                <th>Estado</th> 
+                <th>Acciones</th>                              
             </tr>
             {%for info in listado%}
             <tr>
@@ -20,6 +23,9 @@
                 <td>{{info.grado}}</td>
                 <td>{{info.seccion}}</td>
                 <td>{{info.estado}}</td>
+                <td><a href="{{url_for('deshabilitarAlumno', id=info.id)}}">X</a> | 
+                    <a href="{{url_for('actAlumnos', id=info.id)}}">U</a></td>
+
             </tr>
             {% endfor %}
         </table>

@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block title%}Actualizar profesor{% endblock %} {%block
+    content%}
+    <br />
+    <fieldset class="formulario">
+      <legend>Actualizar información del profesor</legend>
+      <form method="POST">
+        {{acp.hidden_tag()}}
+        {{acp.nombres}}<br />
+        {{acp.apellidoPaterno}}{{acp.apellidoMaterno}}<br /><br />
+        {{acp.dni}}{{acp.nro}} <br /><br />
+        {{acp.tutor.label}}{{acp.tutor}}<br /><br />
+        {{acp.estado.label}}{{acp.estado}}
+        {{acp.boton}}
+      </form>
+    </fieldset>
+    <br /><br />
+    {% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block title%}Agregar profesor{% endblock %} {%block
+content %}
+<br />
+  <fieldset class="formulario">
+    <legend>Registrar un nuevo profesor</legend>
+    <form method="POST">
+      {{agp.hidden_tag()}} 
+      {{agp.nombres}}<br />
+      {{agp.apellidoPaterno}}{{agp.apellidoMaterno}}<br /><br />
+      {{agp.dni}}{{agp.nro}} <br /><br />
+      {{agp.tutor.label}}{{agp.tutor}}<br /><br />
+      {{agp.boton}}
+    </form>
+  </fieldset><br><br>
+  
+
+
+{% endblock %}

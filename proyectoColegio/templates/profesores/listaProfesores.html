@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block title%}Lista de profesores{% endblock %} {%block
+    content%}
+    <br />
+    <a class="nuevo" href="{{url_for('formularioProfesor')}}">Agregar nuevo profesor</a><br><br>
+        <table border="0" class="Tabla">
+            <tr class="encabezado2">
+                <th>ID</th>
+                <th>Nombre completo</th>
+                <th>DNI</th>
+                <th>Telefono</th>
+                <th>Tutoría</th>
+                <th>Estado</th>   
+                <th colspan="2">Acciones</th>                           
+            </tr>
+            {%for info in listadoProfesores%}
+            <tr>
+                <td>{{info.id}}</td>
+                <td>{{info.nombreCompleto}}</td>
+                <td>{{info.dni}}</td>
+                <td>{{info.telefono}}</td>
+                <td>{{info.tutoria}}</td>
+                <td>{{info.estado}}</td>
+                <td><a href="{{url_for('deshabilitarProfesor', id=info.id)}}">X</a> |
+                     <a href="{{url_for('actProfesor', id=info.id)}}">U</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    <br /><br />
+    {% endblock %}

@@ -1,11 +1,10 @@
-{% extends 'base.html' %} {% block title%}Agregar alumno{% endblock %} {%block
+{% extends 'base.html' %} {% block title%}Actualizar alumno{% endblock %} {%block
     content%}
     <br />
     <fieldset class="formulario">
       <legend>Actualizar información del alumno</legend>
       <form method="POST">
         {{act.hidden_tag()}}
-        {{act.id}}<br /><br />
         {{act.nombres}}<br />
         {{act.apellidoPaterno}}{{act.apellidoMaterno}}<br />
         {{act.dni}}{{act.nro}}<br /><br />
