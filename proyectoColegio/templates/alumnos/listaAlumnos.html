@@ -1,7 +1,8 @@
-{% extends 'base.html' %} {% block title%}Lista de alumnos{% endblock %} {%block
-    content%}
-    <br />
+{% extends 'base.html' %} 
+{% block title%}Lista de alumnos{% endblock %} 
+{% block content %}
     <a class="nuevo" href="{{url_for('formularioAlumnos')}}">Agregar nuevo alumno</a><br><br>
+    <a class="filtro" href="{{url_for('filtrar')}}">Filtros</a><br><br>
 
         <table border="0" class="Tabla">
             <tr class="encabezado">
@@ -30,4 +31,4 @@
             {% endfor %}
         </table>
     <br /><br />
-    {% endblock %}
+{% endblock %}

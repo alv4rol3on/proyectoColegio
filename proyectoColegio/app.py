@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import *
 from flask_wtf import *
-from forms import losforms, borrar
+from forms import losforms, busqueda
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikeysecreta'
@@ -16,6 +16,8 @@ def conectar():
         port="3306")
     cursor = conexion.cursor(dictionary=True)
     return conexion, cursor
+
+
 
 #PAGINAS CON FORMULARIO ALUMNO
 @app.route("/agregarAlumno", methods=["GET", "POST"])
@@ -47,14 +49,14 @@ def formularioAlumnos():
         
     return render_template("alumnos/agregarAlumno.html", aga=aga) 
 
-@app.route("/xAlumno/<int:id>", methods=["GET", "POST"])
+@app.route("/alumnos/<int:id>", methods=["GET", "POST"])
 def deshabilitarAlumno(id):
     deshAlumno(id)
     return redirect(url_for("alumnos"))
 
 @app.route("/alumnos", methods=["GET", "POST"])     
-def alumnos():            
-    listado = listar()
+def alumnos():  
+    listado = listar()       
     return render_template("alumnos/listaAlumnos.html", listado = listado)
  
 @app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
@@ -68,7 +70,7 @@ def actAlumnos(id):
         nroApo = act.nro.data
         grado = act.grado.data
         seccion = act.seccion.data
-        estado = act.seccion.data
+        estado = act.estado.data
         
         # registro en la base de datos
         try:
@@ -77,7 +79,7 @@ def actAlumnos(id):
                 f"""
                UPDATE `proyectocole`.`alumno`
                 SET `nombreCompleto` = '{act.apellidoPaterno.data + " "+ act.apellidoMaterno.data+ ", " + act.nombres.data}', `dni` = {act.dni.data},
-                `telf` = {act.nro.data}, `grado` = '{act.grado.data}', `seccion` = '{act.seccion.data}', `estado` = '{act.estado.data}'
+                `telf` = {act.nro.data}, `grado` = '{act.grado.data}', `seccion` = '{act.seccion.data}', `estado` = {act.estado.data}
                 WHERE `id` = {id};
                 """)
             conexion.commit()
@@ -87,8 +89,34 @@ def actAlumnos(id):
             conexion.close()
             return redirect(url_for("inicio"))
         
-    return render_template("alumnos/actualizarAlumno.html", act=act)
-         
+    return render_template("alumnos/actualizarAlumno.html", act=act)   
+
+@app.route("/filtrado", methods=["GET", "POST"])
+def filtrar():
+    filtro = busqueda(request.form)
+    if request.method == "POST":
+        grado = filtro.grado.data
+        seccion = filtro.seccion.data
+        #estado = filtro.estado.data
+        #listaFiltrada = filtroAlumnos(filtro.grado.data, filtro.seccion.data)
+        #print(filtroAlumnos(filtro.grado.data, filtro.seccion.data))
+        return redirect(url_for('resultados', grado=grado, seccion=seccion))
+    
+    return render_template('alumnos/filtrosAlumnos.html', filtro=filtro)
+ 
+@app.route("/filtradoResultado/<grado>/<seccion>", methods=["GET", "POST"])
+def resultados(grado, seccion):
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        SELECT * FROM alumno WHERE 'grado' = '{grado}' and 'seccion' = '{seccion}';
+        """)
+    listaFiltrada = cursor.fetchall() 
+    print(listaFiltrada)
+    
+      
+    return render_template("alumnos/filtroResultadoAlumnos.html", grado=grado, seccion=seccion, listaFiltrada=listaFiltrada)  
+            
 #PAGINAS CON FORMULARIO PROFESOR
 @app.route("/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
@@ -127,12 +155,12 @@ def profesores():
     listadoProfesores = listarProfesor()
     return render_template("profesores/listaProfesores.html", listadoProfesores = listadoProfesores)
 
-@app.route("/xProfesor/<int:id>", methods=["GET", "POST"])
+@app.route("/Profesor/<int:id>", methods=["GET", "POST"])
 def deshabilitarProfesor(id):
     deshProfesor(id)
     return redirect(url_for("profesores"))
 
-@app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
+@app.route("/actualizarProfesor/<int:id>", methods=["GET", "POST"])
 def actProfesor(id):
     acp = losforms(request.form)
     if request.method == "POST" and acp.validate:
@@ -151,36 +179,39 @@ def actProfesor(id):
                 f"""
                 UPDATE `proyectocole`.`profesor`
                 SET `nombreCompleto` = '{acp.apellidoPaterno.data + " "+ acp.apellidoMaterno.data+ ", " + acp.nombres.data}',
-                `dni` = '{acp.dni.data}', `telefono` = '{acp.nro.data}',
-                `tutoria` = '{acp.tutor.data}', `estado` = '{acp.estado.data}'>
+                `dni` = {acp.dni.data}, `telefono` = {acp.nro.data},
+                `tutoria` = '{acp.tutor.data}', `estado` = '{acp.estado.data}'
                 WHERE `id` = {id};
-                """
-            )
+                """)
             conexion.commit()  
         except:
-            print("ERROR A02: ERROR AL ACTUALIZAR UN NUEVO PROFESOR")   
+            print("ERROR D2: ERROR AL EDITAR UN NUEVO PROFESOR")   
         finally:
             conexion.close()
             return redirect(url_for("profesores"))      
  
-    return render_template("profesores/agregarProfesor.html", acp=acp)
+    return render_template("profesores/actualizarProfesor.html", acp=acp)
     
-
-#PAGINAS DE HORARIO
-@app.route("/horarios")
-def paginaHorario():
-    return render_template("horarios/pagHorarios.html")
-
+    
+    
 #paginas enlace
 @app.route("/")
 def inicio():
     return render_template("inicio.html")
-
-@app.route("/administrar")
-def admin():
-    return render_template("administracion.html") 
-   
   
+  
+#FILTRO
+def filtroAlumnos(grado, seccion):   
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        SELECT * FROM alumno WHERE 'grado' = '{grado}' and 'seccion' = '{seccion}';
+        """)
+    listaFiltrada = cursor.fetchall()   
+    conexion.close()
+    
+    return listaFiltrada
+
 #otras funciones  
 def listar():
     conexion, cursor = conectar()

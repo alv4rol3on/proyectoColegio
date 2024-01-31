@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, SelectField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms import StringField, IntegerField, SubmitField, SelectField, SearchField
+from wtforms.validators import DataRequired, Length
 
 salones = [("3 años", "3 años"), ("4 años", "4 años"), ("5 años", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
             ("3ro prim", "3ro prim"), ("4to prim", "4to prim"), ("5to prim", "5to prim"), ("6to prim", "6to prim"),
             ("1ro sec", "1ro sec"), ("2do sec", "2do sec"), ("3ro sec", "3ro sec"), ("4to sec", "4to sec"), ("5to sec", "5to sec")]
 
-tutoria = [("libre", "libre"), ("3 años", "3 años"), ("4 años", "4 años"), ("5 años", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
+tutoria = [("libre", "libre"), ("3 anhos", "3 años"), ("4 anhos", "4 años"), ("5 anhos", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
             ("3ro prim", "3ro prim"), ("4to prim", "4to prim"), ("5to prim", "5to prim"), ("6to prim", "6to prim"),
             ("1ro sec", "1ro sec"), ("2do sec", "2do sec"), ("3ro sec", "3ro sec"), ("4to sec", "4to sec"), ("5to sec", "5to sec")]
 
@@ -34,15 +34,13 @@ class losforms(FlaskForm):
     boton = SubmitField("Registrar")
     deshabilitar = SubmitField("X")
     actualizar = SubmitField("F5")
-    
-    
-    
-class borrar(FlaskForm):
-    id = IntegerField("Id de la persona: ", validators=[DataRequired()])  
-    boton = SubmitField("Borrar de los registros")     
-    
-class filtro(FlaskForm):
-    grado = SelectField("Grado del alumno: ", choices=salones)    
-    buscar = SubmitField("Buscar")
+
+#filtro   
+class busqueda(FlaskForm):
+    grado = SelectField("Grado del alumno: ", choices=salones)
+    seccion = SelectField("Seccion: ", choices=[("A", "A"), ("B", "B")])
+    estado = IntegerField(render_kw={"placeholder": "Estado"})
+    boton = SubmitField("Buscar")
+       
     
    

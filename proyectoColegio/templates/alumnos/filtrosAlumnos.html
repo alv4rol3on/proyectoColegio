@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block title%}Alumnos | filtros{% endblock %} {%block
+    content%}
+    <br />
+    <fieldset class="formulario">
+      <legend>Filtros</legend>
+      <form method="POST">
+        {{filtro.hidden_tag()}}
+        {{filtro.grado}}
+        {{filtro.seccion}}
+        {{filtro.boton}}
+      </form>
+    </fieldset>
+    <br /><br />
+    {% endblock %}

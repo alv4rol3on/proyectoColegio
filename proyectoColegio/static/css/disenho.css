@@ -128,6 +128,21 @@ select {
     font-size: 20px;    
 }
 
+.filtro {
+    background-color: rgb(188, 3, 157);
+    color: aliceblue;
+    border-color: black;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.filtro:hover {
+    background-color: aliceblue;
+    color: rgb(188, 3, 157);
+    border-color: black;
+    font-size: 20px;   
+}
+
 .Tabla {
     background-color: black;
 }
