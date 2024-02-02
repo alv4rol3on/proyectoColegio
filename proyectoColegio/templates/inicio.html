@@ -1,5 +1,33 @@
 {% extends 'base.html' %}
 {% block title%}Inicio{% endblock %}
 {% block content %}
-    <h1>Este es el inicio</h1>
+    <h1>Bienvenido</h1><br><br><br><br><br><br>
+    <h2>Eventos</h2><br>
+    {%if listarEventos%}
+        {%for info in listarEventos%}
+        <div>
+            <table border="0" class="eventosInicio">
+              <tr>
+                <th colspan="3">{{info.fechaCreacion}}</th>
+              </tr>
+              <tr>
+                <td class="titulo" colspan="3" align="center">{{info.nombreEvento}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">{{info.descripcion}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">Lugar: {{info.lugar}}</td>
+              </tr>
+              <tr>
+                <td>Día: <br>{{info.fechaEvento}}</td>
+                <td>Hora: <br>{{info.hora}}</td>  
+              </tr>
+            </table>
+        </div>
+        <br>
+        {%endfor%}
+    {%else%}
+        <h3>No hay eventos aún</h3>
+    {%endif%}    
 {% endblock %}   

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, SelectField, SearchField
+from wtforms import StringField, IntegerField, SubmitField, SelectField, DateField, TimeField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 salones = [("3 años", "3 años"), ("4 años", "4 años"), ("5 años", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
@@ -42,5 +42,13 @@ class busqueda(FlaskForm):
     estado = IntegerField(render_kw={"placeholder": "Estado"})
     boton = SubmitField("Buscar")
        
-    
-   
+#eventos 
+class eventos(FlaskForm):
+    titulo = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el título del evento"})  
+    tipoEvento = SelectField("Tipo de evento: ", choices=[("Anuncio", "Anuncio"), ("Invitacion", "Invitacion")])
+    fecha = DateField('Fecha del evento:', validators=[DataRequired()]) 
+    hora = TimeField("Hora: ")
+    descripcion = TextAreaField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese la descripcion del evento"})
+    lugar = StringField("Lugar del evento: ", validators=[DataRequired()], render_kw={"placeholder": "Lugar del evento(opcional)"})
+    enlace = StringField(render_kw={"placeholder": "Ingrese un enlace(opcional)"})
+    boton = SubmitField("Crear evento")

@@ -1,7 +1,9 @@
 import mysql.connector
 from flask import *
 from flask_wtf import *
-from forms import losforms, busqueda
+from forms import losforms, busqueda, eventos
+from datetime import date
+from funciones import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikeysecreta'
@@ -56,7 +58,7 @@ def deshabilitarAlumno(id):
 
 @app.route("/alumnos", methods=["GET", "POST"])     
 def alumnos():  
-    listado = listar()       
+    listado = listarAlumnos()       
     return render_template("alumnos/listaAlumnos.html", listado = listado)
  
 @app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
@@ -84,7 +86,7 @@ def actAlumnos(id):
                 """)
             conexion.commit()
         except:
-            print("ERROR D: ERROR AL EDITAR UN ALUMNO")
+            print("ERROR A2: ERROR AL EDITAR UN ALUMNO")
         finally:
             conexion.close()
             return redirect(url_for("inicio"))
@@ -117,6 +119,8 @@ def resultados(grado, seccion):
       
     return render_template("alumnos/filtroResultadoAlumnos.html", grado=grado, seccion=seccion, listaFiltrada=listaFiltrada)  
             
+            
+            
 #PAGINAS CON FORMULARIO PROFESOR
 @app.route("/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
@@ -143,7 +147,7 @@ def formularioProfesor():
             )
             conexion.commit()  
         except:
-            print("ERROR A02: ERROR AL INSERTAR UN NUEVO PROFESOR")   
+            print("ERROR B: ERROR AL INSERTAR UN NUEVO PROFESOR")   
         finally:
             conexion.close()
             return redirect(url_for("inicio"))      
@@ -185,7 +189,7 @@ def actProfesor(id):
                 """)
             conexion.commit()  
         except:
-            print("ERROR D2: ERROR AL EDITAR UN NUEVO PROFESOR")   
+            print("ERROR B2: ERROR AL EDITAR UN NUEVO PROFESOR")   
         finally:
             conexion.close()
             return redirect(url_for("profesores"))      
@@ -193,76 +197,67 @@ def actProfesor(id):
     return render_template("profesores/actualizarProfesor.html", acp=acp)
     
     
+  
+#PAGINA EVENTOS
+@app.route("/eventos")
+def eventosPagina():
+    listaEventos = listarEventos()
+    
+    return render_template("eventos/eventos.html", listarEventos=listaEventos)
+
+@app.route("/eventos/crearEvento", methods=["GET", "POST"])
+def crearEventos():
+    ev = eventos(request.form)
+    if request.method == "POST" and ev.validate:
+        titulo = ev.titulo.data
+        tipoEvento = ev.tipoEvento.data
+        fecha = ev.fecha.data
+        hora = ev.hora.data
+        descripcion = ev.descripcion.data
+        lugar = ev.lugar.data
+        enlace = ev.enlace.data
+        
+        #BBDD
+        try:
+            conexion, cursor = conectar()
+            cursor.execute(
+                f"""
+                INSERT INTO `proyectocole`.`eventos`
+                (`nombreEvento`, `fechaEvento`, `hora`, `tipoEvento`, `descripcion`,
+                `lugar`, `enlace`, `fechaCreacion`)
+                VALUES
+                ('{titulo}', '{fecha}',
+                '{hora}', '{tipoEvento}',
+                '{descripcion}', '{lugar}',
+                '{enlace}', '{date.today()}');
+                """
+            )
+            conexion.commit()
+        except:
+            print("ERROR C: ERROR AL INSERTAR UN NUEVO ALUMNO")
+        finally:
+            conexion.close()
+            return redirect(url_for("eventosPagina"))
+        
+    return render_template("eventos/crearEvento.html", ev=ev)
+
+@app.route("/eventosX/<int:id>")
+def deshabilitarEvento(id):
+    deshEvento(id)
+    return redirect(url_for("eventosPagina"))
+
+@app.route("/eventosA/<int:id>")
+def habilitarEvento(id):
+    habEvento(id)
+    return redirect(url_for("eventosPagina"))
+
     
 #paginas enlace
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def inicio():
-    return render_template("inicio.html")
+    listaEventos = eventosInicio()
+    return render_template("inicio.html", listarEventos=listaEventos)
   
-  
-#FILTRO
-def filtroAlumnos(grado, seccion):   
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        SELECT * FROM alumno WHERE 'grado' = '{grado}' and 'seccion' = '{seccion}';
-        """)
-    listaFiltrada = cursor.fetchall()   
-    conexion.close()
-    
-    return listaFiltrada
 
-#otras funciones  
-def listar():
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-        `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`;
-        """)
-    lista = cursor.fetchall()  
-    conexion.close()
-        
-    return lista    
-  
-def listarProfesor():
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        SELECT `profesor`.`id`, `profesor`.`nombreCompleto`,
-        `profesor`.`dni`, `profesor`.`telefono`, `profesor`.`tutoria`, `profesor`.`estado`
-        FROM `proyectocole`.`profesor`;
-        """)
-    listaProfesores = cursor.fetchall()
-    conexion.close()
-    
-    return listaProfesores         
-
-def deshAlumno(id):
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        UPDATE `proyectocole`.`alumno`
-        SET `estado` = 0
-        WHERE `id` = '{id}';
-        """
-    )
-    conexion.commit()
-    cursor.close()
-    conexion.close()
-
-def deshProfesor(id):
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        UPDATE `proyectocole`.`profesor`
-        SET `estado` = 0
-        WHERE `id` = '{id}';
-        """        
-    )    
-    conexion.commit()
-    cursor.close()
-    conexion.close()
-                
 if __name__ == '__main__':
     app.run(debug=True)

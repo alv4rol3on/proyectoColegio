@@ -36,17 +36,6 @@ header {
     color: rgb(255, 72, 72); 
 }
 
-.opciones_admin .enlaces a {
-    text-decoration: none;
-    font-size: 25px;
-    color: ghostwhite; 
-}
-
-.opciones_admin .enlaces a:hover {
-    text-decoration: none;
-    font-size: 25px;
-    color: rgb(238, 255, 139); 
-}
 
 .links{  
     display: flex;
@@ -157,9 +146,40 @@ select {
     background-color: rgb(37, 33, 123);
 }
 
+.encabezado3 {
+    color: rgb(0, 0, 0);
+    background-color: rgb(238, 255, 0);    
+}
+
 .Tabla td{
     color: black;
     background-color: azure;
+}
+
+
+
+
+
+
+
+
+/*PAGINA INICIO*/
+.eventosInicio {
+    border-radius: 20px;
+}
+
+.eventosInicio th{
+    background-color: mediumpurple;
+    border-radius: 10px 10px 0px  0px ;    
+}
+
+.eventosInicio td{
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+.titulo {
+    font-size: 20px;
 }
 
 

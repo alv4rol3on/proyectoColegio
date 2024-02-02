@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title%}Eventos{% endblock %}
+{% block content %}
+    <h1>EVENTOS</h1><br><br>
+    <a class="nuevo" href="{{url_for('crearEventos')}}">Crear nuevo evento</a><br><br>
+
+    <table border="0" class="Tabla">
+        <tr class="encabezado3">
+            <th>ID</th>
+            <th>Fecha de publicación</th>
+            <th>Titulo</th>
+            <th>Tipo de evento</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Descripcion</th>
+            <th>Lugar</th>
+            <th>Estado</th>
+            <th colspan="2">Acciones</th>                           
+        </tr>
+        {%for info in listarEventos%}
+        <tr>
+            <td>{{info.id}}</td>
+            <td>{{info.fechaCreacion}}</td>
+            <td>{{info.nombreEvento}}</td>
+            <td>{{info.tipoEvento}}</td>
+            <td>{{info.fechaEvento}}</td>
+            <td>{{info.hora}}</td>
+            <td>{{info.descripcion}}</td>
+            <td>{{info.lugar}}</td>
+            <td>{{info.estado}}</td>
+            <td><a href="{{url_for('deshabilitarEvento', id=info.id)}}">X</a></td>
+            <td><a href="{{url_for('habilitarEvento', id=info.id)}}">A</a></td>
+
+        </tr>
+        {% endfor %}
+    </table>
+<br /><br />
+{% endblock %}   

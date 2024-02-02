@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% block title%}Crear Evento{% endblock %} {%block
+    content%}
+    <br />
+    <fieldset class="formulario">
+      <legend>Creación de evento</legend>
+      <form method="POST">
+        {{ev.hidden_tag()}}
+        {{ev.titulo}}<br><br>
+        {{ev.tipoEvento.label}}{{ev.tipoEvento}}<br><br>
+        {{ev.fecha}}{{ev.hora}}<br><br>
+        {{ev.descripcion}}<br><br>
+        {{ev.lugar}}{{ev.enlace}}
+        {{ev.boton}}
+      </form>
+    </fieldset>
+    <br /><br />
+    {% endblock %}
