@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title%}Agregar administrador{% endblock %}
+{% block content %}
+<br />
+<fieldset class="formulario">
+  <legend>Registrar un nuevo administrador</legend>
+  <form method="POST">
+    {{adm.hidden_tag()}}{{adm.nombres}}<br />
+    {{adm.apellidoPaterno}}<br />{{adm.apellidoMaterno}}<br />
+    {{adm.user}}<br />{{adm.password}}<br /><br />
+    {{adm.boton}}
+  </form>
+</fieldset>
+<br /><br />
+{% endblock %}   

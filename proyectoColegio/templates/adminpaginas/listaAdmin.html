@@ -1,0 +1,27 @@
+{% extends 'base.html' %} 
+{% block title%}Lista de administradores{% endblock %} 
+{% block content %}
+<h1>Lista de administradores</h1><br><br>
+        <table border="0" class="Tabla">
+            <tr class="encabezado">
+                <th>ID</th>
+                <th>Nombres </th>
+                <th>Apellidos</th>
+                <th>Nombre de usuario</th>
+                <th>Acciones</th>                             
+            </tr>
+            {%for info in listaAdmin%}
+            <tr>
+                <td>{{info.id}}</td>
+                <td>{{info.nombre}}</td>
+                <td>{{info.apellido}}</td>
+                <td>{{info.usuario}}</td>
+                <td><a>A</a> |
+                    <a>X</a> |
+                    <a>U</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    <br /><br />
+
+{% endblock %}

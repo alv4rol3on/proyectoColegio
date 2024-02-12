@@ -11,7 +11,7 @@ def conectar():
     return conexion, cursor
 
 
-##funciones para eventos
+#funciones para eventos
 def listarEventos():
     conexion, cursor = conectar()
     cursor.execute(
@@ -49,20 +49,77 @@ def deshEvento(id):
     conexion.commit()
     cursor.close()
     conexion.close()
-   
-            
-#funciones alumnos
-def listarAlumnos():
+ 
+def borrarEvento(id):
     conexion, cursor = conectar()
     cursor.execute(
         f"""
-        SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-        `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`;
-        """)
+        DELETE FROM `proyectocole`.`eventos`
+        WHERE id = {id};
+        """
+    )
+    conexion.commit()
+    cursor.close()
+    conexion.close()       
+
+
+
+#alumnos
+def listarAlumnos(grado=None, seccion=None, estado=None):
+    conexion, cursor = conectar()
+
+    if grado and seccion and estado:
+        cursor.execute(
+            f"""
+            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
+            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            WHERE `alumno`.`grado` = %s AND `alumno`.`seccion` = %s and `alumno`.`estado` = %s;
+            """, (grado, seccion, estado))
+    elif grado:
+        cursor.execute(
+            f"""
+            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
+            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            WHERE `alumno`.`grado` = %s;
+            """, (grado,))
+    elif seccion:
+        cursor.execute(
+            f"""
+            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
+            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            WHERE `alumno`.`seccion` = %s;
+            """, (seccion,))
+    elif estado:
+        cursor.execute(
+            f"""
+            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
+            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            WHERE `alumno`.`estado` = %s;
+            """, (estado,))
+    else:
+        cursor.execute(
+            f"""
+            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
+            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`;
+            """)
+
     lista = cursor.fetchall()  
     conexion.close()
         
-    return lista    
+    return lista       
+
+def habAlumno(id):
+    conexion, cursor = conectar()
+    cursor.execute(
+        f"""
+        UPDATE `proyectocole`.`alumno`
+        SET `estado` = 1
+        WHERE `id` = '{id}';
+        """
+    )
+    conexion.commit()
+    cursor.close()
+    conexion.close()    
   
 def deshAlumno(id):
     conexion, cursor = conectar()
@@ -76,7 +133,6 @@ def deshAlumno(id):
     conexion.commit()
     cursor.close()
     conexion.close()
-
 
 #funciones profesor
 def listarProfesor():
@@ -104,19 +160,22 @@ def deshProfesor(id):
     conexion.commit()
     cursor.close()
     conexion.close()
-   
-   
-#FILTRO
-def filtroAlumnos(grado, seccion):   
+
+
+
+#funciones admin
+def listarAdmin():
     conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        SELECT * FROM alumno WHERE 'grado' = '{grado}' and 'seccion' = '{seccion}';
+    cursor.execute("""
+        SELECT `admin`.`id`,
+        `admin`.`nombre`, `admin`.`apellido`, `admin`.`usuario`
+        FROM `proyectocole`.`admin`;
         """)
-    listaFiltrada = cursor.fetchall()   
+
+    listaAdministradores = cursor.fetchall()  
     conexion.close()
     
-    return listaFiltrada
+    return listaAdministradores
 
 #inicio  
 def eventosInicio():

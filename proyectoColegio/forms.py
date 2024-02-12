@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, SelectField, DateField, TimeField, TextAreaField
+from wtforms import StringField, IntegerField, SubmitField, SelectField, DateField, TimeField, TextAreaField, PasswordField
 from wtforms.validators import DataRequired, Length
 
 salones = [("3 años", "3 años"), ("4 años", "4 años"), ("5 años", "5 años"), ("1ro prim", "1ro prim"), ("2do prim", "2do prim"), 
@@ -23,6 +23,7 @@ class losforms(FlaskForm):
     estado = SelectField("Estado: ", choices=[(0, "Deshabilitar"), (1, "Habilitar")])
     dni = IntegerField(validators=[DataRequired(), Length(min=9, max=9)], render_kw={"placeholder": "Ingrese el dni"})
     
+    
     #alumno
     grado = SelectField("Grado del alumno: ", choices=salones)   
     seccion = SelectField("Seccion: ", choices=[("A", "A"), ("B", "B")])
@@ -34,6 +35,10 @@ class losforms(FlaskForm):
     boton = SubmitField("Registrar")
     deshabilitar = SubmitField("X")
     actualizar = SubmitField("F5")
+    
+    #admin
+    user = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el nombre de usuario", "size":30})
+    password = PasswordField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese la contraseña", "size":30})
 
 #filtro   
 class busqueda(FlaskForm):
@@ -49,6 +54,6 @@ class eventos(FlaskForm):
     fecha = DateField('Fecha del evento:', validators=[DataRequired()]) 
     hora = TimeField("Hora: ")
     descripcion = TextAreaField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese la descripcion del evento"})
-    lugar = StringField("Lugar del evento: ", validators=[DataRequired()], render_kw={"placeholder": "Lugar del evento(opcional)"})
+    lugar = StringField("Lugar del evento: ", render_kw={"placeholder": "Lugar del evento(opcional)"})
     enlace = StringField(render_kw={"placeholder": "Ingrese un enlace(opcional)"})
     boton = SubmitField("Crear evento")

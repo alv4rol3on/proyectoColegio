@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title%}Resultado de busqueda | Lista de alumnos{% endblock %} 
+{% block content %}
+<a class="nuevo" href="{{url_for('formularioAlumnos')}}">Agregar nuevo alumno</a><br><br>
+<div class="search-bar">
+    <form name="formSearch" method="POST" action="{{ url_for('alumnos') }}" class="search" autocomplete="off">
+      <input type="search" name="buscar" class="search__input" placeholder="Buscar por nombre" required>
+      <button type="submit" class="search__btn">Buscar</button>
+    </form>
+</div><br><br>
+<form method="get" action="{{ url_for('alumnos') }}">
+    <label for="grado">Grado:</label>
+    <select name="grado" id="grado">
+        <option value="">Todos</option>
+        {% for opciones in salones%}
+            <option value="{{opciones}}">{{opciones}}</option>
+        {%endfor%}
+    </select>
+
+    <label for="seccion">Sección:</label>
+    <select name="seccion" id="seccion">
+        <option value="">Todas</option>
+        <option value="A">A</option>
+        <option value="B">B</option> 
+    </select>
+
+    <label for "estado">Estado:</label>
+    <select name="estado" id="estado">
+        <option value="">Todas</option>
+        <option value="1">Activo</option>
+        <option value="0">Inactivo</option> 
+    </select>
+
+    
+
+    <button type="submit">Filtrar</button>
+</form><br><br>
+
+
+<div id="resultado" class="text-center">
+    <h4 class="text-center">Resultado <hr></h4>
+    {% if (resultados) %}   
+        <section>   
+            <table border="0" class="Tabla">
+                <tr class="encabezado">
+                    <th>ID</th>
+                    <th>Nombre completo</th>
+                    <th>DNI</th>
+                    <th>Telefono del apoderado</th>
+                    <th>Grado</th>
+                    <th>Sección</th>
+                    <th>Estado</th> 
+                    <th>Acciones</th>                              
+                </tr>
+                <tr>
+                    <td>{{resultados.id}}</td>
+                    <td>{{resultados.nombreCompleto}}</td>
+                    <td>{{resultados.dni}}</td>
+                    <td>{{resultados.telf}}</td>
+                    <td>{{resultados.grado}}</td>
+                    <td>{{resultados.seccion}}</td>
+                    <td>{{resultados.estado}}</td>
+                    <td><a href="{{url_for('habilitarAlumno', id=resultados.id)}}">A</a> |
+                        <a href="{{url_for('deshabilitarAlumno', id=resultados.id)}}">X</a> |
+                        <a href="{{url_for('actAlumnos', id=resultados.id)}}">U</a></td>
+    
+                </tr>
+            </table> 
+        </section>  
+    {% else %}
+        <p>No hay resultados para la busqueda</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

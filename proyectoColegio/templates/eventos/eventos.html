@@ -15,7 +15,7 @@
             <th>Descripcion</th>
             <th>Lugar</th>
             <th>Estado</th>
-            <th colspan="2">Acciones</th>                           
+            <th colspan="3">Acciones</th>                           
         </tr>
         {%for info in listarEventos%}
         <tr>
@@ -28,8 +28,9 @@
             <td>{{info.descripcion}}</td>
             <td>{{info.lugar}}</td>
             <td>{{info.estado}}</td>
-            <td><a href="{{url_for('deshabilitarEvento', id=info.id)}}">X</a></td>
-            <td><a href="{{url_for('habilitarEvento', id=info.id)}}">A</a></td>
+            <td><a href="{{url_for('deshabilitarEvento', id=info.id)}}">Deshabilitar</a><br>
+                <a href="{{url_for('habilitarEvento', id=info.id)}}">Habilitar</a><br>
+                <a href="{{url_for('eliminarEvento', id=info.id)}}">Eliminar</a></td>
 
         </tr>
         {% endfor %}

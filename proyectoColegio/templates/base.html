@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="static/css/disenho.css" />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/disenho.css')}}"/>
+    <link rel="icon" href="{{url_for('static', filename ='img/logo.png')}}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <title>{% block title%}Inicio{% endblock %}</title>
@@ -16,13 +17,24 @@
   <body>
     <div class="container">
 
-    <div class="links">
-      <a href="{{url_for('inicio')}}">Inicio</a><br><br>
-      <a href="{{url_for('alumnos')}}">Alumnos</a><br><br>
-      <a href="{{url_for('profesores')}}">Profesores</a><br><br>
-      <a>Horarios</a><br><br>
-      <a href="{{url_for('eventosPagina')}}">Eventos escolares</a><br><br>
-    </div>
+    <nav class="links">
+      <li><a href="{{url_for('inicio')}}">Inicio</a></li><br><br>
+      <li>Administración
+        <ul>
+          <li><a href="{{url_for('crearAdmin')}}">Crear administradores</a></li>
+          <li><a href="{{url_for('listadeAdmin')}}">Lista de administradores</a></li>
+        </ul>
+      </li> <br> <br> 
+      <li><a href="{{url_for('alumnos')}}">Alumnos</a></li><br><br>
+      <li><a href="{{url_for('profesores')}}">Profesores</a></li><br><br>
+      <li>Horarios
+        <ul>
+          <li><a>Crear turnos</a></li>
+          <li><a>Visualizar horarios</a></li>
+        </ul>
+      </li> <br> <br>
+      <li><a href="{{url_for('eventosPagina')}}">Eventos escolares</a></li><br><br>
+    </nav>
 
     <!--CONTENIDO-->
     <div class="divform">

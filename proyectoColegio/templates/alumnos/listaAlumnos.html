@@ -1,8 +1,43 @@
 {% extends 'base.html' %} 
 {% block title%}Lista de alumnos{% endblock %} 
 {% block content %}
+    <h1>LISTA DE ALUMNOS</h1><br><br>
     <a class="nuevo" href="{{url_for('formularioAlumnos')}}">Agregar nuevo alumno</a><br><br>
-    <a class="filtro" href="{{url_for('filtrar')}}">Filtros</a><br><br>
+    <div>
+        <form name="formSearch" method="POST" action="{{ url_for('alumnos') }}" class="search" autocomplete="off">
+          <input type="search" name="buscar" placeholder="Buscar por dni" required>
+          <button type="submit">Buscar</button>
+        </form>
+    </div><br><br>
+    <form method="get" action="{{ url_for('alumnos') }}">
+        <label for="grado">Grado:</label>
+        <select name="grado" id="grado">
+            <option value="">Todos</option>
+            {% for opciones in salones%}
+                <option value="{{opciones}}">{{opciones}}</option>
+            {%endfor%}
+        </select>
+
+        <label for="seccion">Sección:</label>
+        <select name="seccion" id="seccion">
+            <option value="">Todas</option>
+            <option value="A">A</option>
+            <option value="B">B</option> 
+        </select>
+
+        <label for "estado">Estado:</label>
+        <select name="estado" id="estado">
+            <option value="">Todas</option>
+            <option value="1">Activo</option>
+            <option value="0">Inactivo</option> 
+        </select>
+
+        
+
+        <button type="submit">Filtrar</button>
+    </form><br><br>
+
+
 
         <table border="0" class="Tabla">
             <tr class="encabezado">
@@ -24,11 +59,13 @@
                 <td>{{info.grado}}</td>
                 <td>{{info.seccion}}</td>
                 <td>{{info.estado}}</td>
-                <td><a href="{{url_for('deshabilitarAlumno', id=info.id)}}">X</a> | 
+                <td><a href="{{url_for('habilitarAlumno', id=info.id)}}">A</a> |
+                    <a href="{{url_for('deshabilitarAlumno', id=info.id)}}">X</a> |
                     <a href="{{url_for('actAlumnos', id=info.id)}}">U</a></td>
 
             </tr>
             {% endfor %}
         </table>
     <br /><br />
+
 {% endblock %}

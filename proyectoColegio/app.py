@@ -1,12 +1,15 @@
 import mysql.connector
 from flask import *
 from flask_wtf import *
-from forms import losforms, busqueda, eventos
+from forms import losforms, eventos
 from datetime import date
 from funciones import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikeysecreta'
+
+#necesario
+salones = ["3 años", "4 años", "5 años", "1ro prim", "2do prim", "3ro prim",  "4to prim",  "5to prim", "6to prim", "1ro sec", "2do sec", "3ro sec", "4to sec", "5to sec"]
 
 #conexion a base de datos
 def conectar():
@@ -51,15 +54,35 @@ def formularioAlumnos():
         
     return render_template("alumnos/agregarAlumno.html", aga=aga) 
 
-@app.route("/alumnos/<int:id>", methods=["GET", "POST"])
+@app.route("/alumnosX/<int:id>", methods=["GET", "POST"])
 def deshabilitarAlumno(id):
     deshAlumno(id)
     return redirect(url_for("alumnos"))
 
+@app.route("/alumnosA/<int:id>", methods=["GET", "POST"])
+def habilitarAlumno(id):
+    habAlumno(id)
+    return redirect(url_for("alumnos"))
+
 @app.route("/alumnos", methods=["GET", "POST"])     
-def alumnos():  
-    listado = listarAlumnos()       
-    return render_template("alumnos/listaAlumnos.html", listado = listado)
+def alumnos(): 
+    if request.method=="POST":
+        texto = request.form['buscar']
+        conexion, cursor = conectar()
+        cursor.execute("SELECT * FROM `proyectocole`.`alumno` WHERE `alumno`.`dni` = '%s'" % (texto,))
+        resultadoBusqueda = cursor.fetchone()  
+        cursor.close()
+        conexion.close()
+        return render_template("alumnos/resultadoBusqueda.html",resultados = resultadoBusqueda)
+        
+    
+    if request.method=="GET":
+        grado = request.args.get('grado', default=None, type=str)
+        seccion = request.args.get('seccion', default=None, type=str)
+        estado = request.args.get('estado', default=None, type=str)  
+     
+        listado = listarAlumnos(grado, seccion, estado) 
+    return render_template("alumnos/listaAlumnos.html", listado = listado, salones=salones)
  
 @app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
 def actAlumnos(id):
@@ -93,34 +116,7 @@ def actAlumnos(id):
         
     return render_template("alumnos/actualizarAlumno.html", act=act)   
 
-@app.route("/filtrado", methods=["GET", "POST"])
-def filtrar():
-    filtro = busqueda(request.form)
-    if request.method == "POST":
-        grado = filtro.grado.data
-        seccion = filtro.seccion.data
-        #estado = filtro.estado.data
-        #listaFiltrada = filtroAlumnos(filtro.grado.data, filtro.seccion.data)
-        #print(filtroAlumnos(filtro.grado.data, filtro.seccion.data))
-        return redirect(url_for('resultados', grado=grado, seccion=seccion))
-    
-    return render_template('alumnos/filtrosAlumnos.html', filtro=filtro)
- 
-@app.route("/filtradoResultado/<grado>/<seccion>", methods=["GET", "POST"])
-def resultados(grado, seccion):
-    conexion, cursor = conectar()
-    cursor.execute(
-        f"""
-        SELECT * FROM alumno WHERE 'grado' = '{grado}' and 'seccion' = '{seccion}';
-        """)
-    listaFiltrada = cursor.fetchall() 
-    print(listaFiltrada)
-    
-      
-    return render_template("alumnos/filtroResultadoAlumnos.html", grado=grado, seccion=seccion, listaFiltrada=listaFiltrada)  
-            
-            
-            
+                   
 #PAGINAS CON FORMULARIO PROFESOR
 @app.route("/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
@@ -224,12 +220,12 @@ def crearEventos():
                 f"""
                 INSERT INTO `proyectocole`.`eventos`
                 (`nombreEvento`, `fechaEvento`, `hora`, `tipoEvento`, `descripcion`,
-                `lugar`, `enlace`, `fechaCreacion`)
+                `lugar`, `enlace`, `fechaCreacion`, `estado`)
                 VALUES
                 ('{titulo}', '{fecha}',
                 '{hora}', '{tipoEvento}',
                 '{descripcion}', '{lugar}',
-                '{enlace}', '{date.today()}');
+                '{enlace}', '{date.today()}', '{1}');
                 """
             )
             conexion.commit()
@@ -251,13 +247,56 @@ def habilitarEvento(id):
     habEvento(id)
     return redirect(url_for("eventosPagina"))
 
+@app.route("/eventosB/<int:id>")
+def eliminarEvento(id):
+    borrarEvento(id)
+    return redirect(url_for("eventosPagina"))
+
+
+#ADMIN
+@app.route("/admin/crear", methods=["GET", "POST"])
+def crearAdmin():
+    adm = losforms(request.form)
+    if request.method=="POST" and adm.validate:
+        nombres = adm.nombres.data
+        apellidoPa = adm.apellidoPaterno.data
+        apellidoMa = adm.apellidoMaterno.data
+        user = adm.user.data 
+        password = adm.password.data
+
+        try:
+            conexion, cursor = conectar()
+            cursor.execute(
+                f"""
+                INSERT INTO `proyectocole`.`admin`
+                (`nombre`,`apellido`,`usuario`,`password`)
+                VALUES
+                ('{adm.nombres.data}','{adm.apellidoPaterno.data + " " + adm.apellidoMaterno.data}','{adm.user.data }','{adm.password.data}');
+                """
+            )
+            conexion.commit()  
+        except:
+            print("ERROR EN EL REGISTRO DE ADMIN")    
+        finally:
+            conexion.close()
+            return redirect(url_for("inicio"))  
+        
+    return render_template("adminpaginas/formAdmin.html", adm=adm)    
+ 
+@app.route("/admin/lista", methods=["GET", "POST"])
+def listadeAdmin():
+    listaAdmin = listarAdmin()
+    return render_template("adminpaginas/listaAdmin.html", listaAdmin=listaAdmin) 
     
 #paginas enlace
 @app.route("/", methods=["GET", "POST"])
 def inicio():
     listaEventos = eventosInicio()
     return render_template("inicio.html", listarEventos=listaEventos)
-  
+ 
+@app.errorhandler(404)
+def no_encontrado(error):
+    return redirect(url_for('inicio'))  
 
 if __name__ == '__main__':
     app.run(debug=True)
