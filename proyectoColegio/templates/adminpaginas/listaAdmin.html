@@ -8,6 +8,7 @@
                 <th>Nombres </th>
                 <th>Apellidos</th>
                 <th>Nombre de usuario</th>
+                <th>Estado</th>
                 <th>Acciones</th>                             
             </tr>
             {%for info in listaAdmin%}
@@ -16,9 +17,10 @@
                 <td>{{info.nombre}}</td>
                 <td>{{info.apellido}}</td>
                 <td>{{info.usuario}}</td>
-                <td><a>A</a> |
-                    <a>X</a> |
-                    <a>U</a></td>
+                <td>{{info.estado}}</td>
+                <td><a href="{{url_for('habilitarAdmin', id=info.id)}}">A</a> |
+                    <a href="{{url_for('deshabilitarAdmin', id=info.id)}}">X</a> |
+                    <a href="{{url_for('actAdmin', id=info.id)}}">U</a></td>
             </tr>
             {% endfor %}
         </table>

@@ -1,14 +1,19 @@
 {% extends 'base.html' %} {% block title%}Horarios{% endblock %} {%block content
-%} 
-    <div>
-        <div>
-            <a><h2>Asignación de profesores</h2></a>
-        </div>
-    
-        <div>
-            <a><h2>Creación de horarios</h2></a>
-        </div>  
-    </div>
-  
+%}
+
+<fieldset class="formulario">
+  <legend>Registrar un nuevo turno</legend>
+  <form method="POST">
+
+    {{hr.hidden_tag()}}
+    Profesor: {{hr.profesor}}<br /><br />
+    Salón: {{hr.salon}} Día: {{hr.dia}}<br /><br />
+    Curso: {{hr.curso}}<br /><br />
+    Inicio de la clase: {{hr.hora_inicio}}<br /><br />
+    Fin de la clase: {{hr.hora_fin}}<br /><br />
+    {{hr.boton}}
+  </form>
+</fieldset>
+<br /><br />
 
 {% endblock %}

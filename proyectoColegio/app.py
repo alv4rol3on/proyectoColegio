@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import *
 from flask_wtf import *
-from forms import losforms, eventos
+from forms import *
 from datetime import date
 from funciones import *
 
@@ -10,7 +10,9 @@ app.config['SECRET_KEY'] = 'mikeysecreta'
 
 #necesario
 salones = ["3 años", "4 años", "5 años", "1ro prim", "2do prim", "3ro prim",  "4to prim",  "5to prim", "6to prim", "1ro sec", "2do sec", "3ro sec", "4to sec", "5to sec"]
-
+materias = ["Aritmetica", "Algebra", "Geometria", "Trigonometria", "Rz. Matemático", "Historia del Perú", "Historia Universal", "Geografía", "Cívica",
+            "Biología", "Química", "Gramática", "Literatura", "Rz. Verbal", "Plan Lector", "Computo", "Arte", "Danza", "Ed. Física"]
+dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
 #conexion a base de datos
 def conectar():
     conexion = mysql.connector.connect(
@@ -155,7 +157,7 @@ def profesores():
     listadoProfesores = listarProfesor()
     return render_template("profesores/listaProfesores.html", listadoProfesores = listadoProfesores)
 
-@app.route("/Profesor/<int:id>", methods=["GET", "POST"])
+@app.route("/ProfesorX/<int:id>", methods=["GET", "POST"])
 def deshabilitarProfesor(id):
     deshProfesor(id)
     return redirect(url_for("profesores"))
@@ -191,7 +193,12 @@ def actProfesor(id):
             return redirect(url_for("profesores"))      
  
     return render_template("profesores/actualizarProfesor.html", acp=acp)
-    
+
+@app.route("/ProfesorA/<int:id>", methods=["GET", "POST"])
+def habilitarProfesor(id):
+    habProfesor(id)
+    return redirect(url_for("profesores"))
+  
     
   
 #PAGINA EVENTOS
@@ -253,6 +260,68 @@ def eliminarEvento(id):
     return redirect(url_for("eventosPagina"))
 
 
+#HORARIOS
+@app.route("/horario/crear_turno", methods=["GET", "POST"])
+def crearTurno():
+    hr = horarios()
+    listadoProfesores = profesoresHabilitados()
+    hr.profesor.choices = [(profesor['id'], profesor['nombreCompleto']) for profesor in listadoProfesores]
+    if request.method == "POST" and hr.validate:
+        profesor = hr.profesor.data
+        salon = hr.salon.data
+        dia = hr.dia.data
+        curso = hr.curso.data
+        hora_inicio = hr.hora_inicio.data
+        hora_fin = hr.hora_fin.data
+        
+        #BBDD
+        try:
+            conexion, cursor = conectar()
+            consulta = """
+                SELECT * FROM `proyectocole`.`horario` WHERE 
+                `salon` = %s AND `dia` = %s AND
+                `inicio` = %s AND `fin` = %s;
+            """
+            valores = (hr.salon.data, hr.dia.data, hr.hora_inicio.data, hr.hora_fin.data)
+            cursor.execute(consulta, valores)
+            resultado = cursor.fetchall()
+
+            if len(resultado) == 0:
+                consulta_form = """
+                INSERT INTO `proyectocole`.`horario`
+                (`profesor`, `salon`, `dia`, `curso`, `inicio`, `fin`)
+                VALUES
+                (%s, %s, %s, %s, %s, %s);                  
+                """
+                valores_form = (hr.profesor.data, hr.salon.data, hr.dia.data, hr.curso.data, hr.hora_inicio.data, hr.hora_fin.data)
+                cursor.execute(consulta_form, valores_form)
+                conexion.commit()
+            else:
+                print("Conicidencias encontradas")
+        
+            conexion.close()  
+        except Exception as e:
+            print(f"ERROR EN REGISTRAR UN HORARIO: {str(e)}")
+        finally:
+            return redirect(url_for("inicio"))
+
+    return render_template("horarios/pagHorarios.html", listadoProfesores = listadoProfesores, hr=hr)
+
+@app.route("/horarios", methods=["GET", "POST"])  
+def horario():
+    if request.method == "GET":
+        grado = request.args.get('grado', default=None, type=str)
+        dia = request.args.get('dia', default=None, type=str)
+        resultado = horario_salon(grado, dia)
+   
+    return render_template("/horarios/horariosSalon.html", resultado=resultado, salones=salones, dias=dias) 
+
+@app.route("/horarios/eliminar/<int:id>", methods=["GET", "POST"])
+def eliminarTurno(id):
+    eliminar_horario(id)
+    return redirect(url_for("horario"))
+
+
 #ADMIN
 @app.route("/admin/crear", methods=["GET", "POST"])
 def crearAdmin():
@@ -287,12 +356,56 @@ def crearAdmin():
 def listadeAdmin():
     listaAdmin = listarAdmin()
     return render_template("adminpaginas/listaAdmin.html", listaAdmin=listaAdmin) 
+ 
+@app.route("/adminX/<int:id>", methods=["GET", "POST"])
+def deshabilitarAdmin(id):
+    deshAdmin(id)
+    return redirect(url_for("listadeAdmin"))
+
+@app.route("/adminA/<int:id>", methods=["GET", "POST"])
+def habilitarAdmin(id):
+    habAdmin(id)
+    return redirect(url_for("listadeAdmin"))
+  
+@app.route("/admin/editarUsuario/<int:id>", methods=["GET", "POST"])  
+def actAdmin(id):
+    adm = losforms(request.form)
+    if request.method=="POST" and adm.validate:
+        nombres = adm.nombres.data
+        apellidoPa = adm.apellidoPaterno.data
+        apellidoMa = adm.apellidoMaterno.data
+        user = adm.user.data 
+        password = adm.password.data
+
+        try:
+            conexion, cursor = conectar()
+            cursor.execute(
+                f"""
+                UPDATE `proyectocole`.`admin`
+                SET
+                `nombre` = '{adm.nombres.data}',
+                `apellido` = '{adm.apellidoPaterno.data + " " + adm.apellidoMaterno.data}',
+                `usuario` = '{adm.user.data}',
+                `password` = '{adm.password.data}'
+                WHERE `id` = {id};
+                """
+            )
+            conexion.commit()  
+        except:
+            print("ERROR AL ACTUALIZAR INFORMACION DEL ADMINISTRADOR")    
+        finally:
+            conexion.close()
+            return redirect(url_for("listadeAdmin"))  
+        
+    return render_template("adminpaginas/actualizarAdmin.html", adm=adm)    
     
 #paginas enlace
 @app.route("/", methods=["GET", "POST"])
 def inicio():
     listaEventos = eventosInicio()
     return render_template("inicio.html", listarEventos=listaEventos)
+ 
+ 
  
 @app.errorhandler(404)
 def no_encontrado(error):

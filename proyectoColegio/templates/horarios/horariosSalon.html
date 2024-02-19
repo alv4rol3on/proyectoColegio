@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block title%}Horarios{% endblock %} {%block content%}
+<form method="get" action="{{ url_for('horario') }}">
+    <label for="grado">Grado:</label>
+    <select name="grado" id="grado">
+        <option value="">Todos</option>
+        {% for opciones in salones%}
+            <option value="{{opciones}}">{{opciones}}</option>
+        {%endfor%}
+    </select>
+
+    <label for="dia">Dia:</label>
+    <select name="dia" id="dia">
+        <option value="">Todos</option>
+        {% for opciones in dias%}
+            <option value="{{opciones}}">{{opciones}}</option>
+        {%endfor%}
+    </select>
+    <button type="submit">Visualizar horario</button>
+</form><br><br>
+
+
+<h2>Horario:</h2><br>
+    <div>
+        <table border="0" class="Tabla">
+            <tr>
+                <th>SALÓN</th>
+                <th>Dia</th>
+                <th>Curso</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>    
+{%if resultado%}
+    {%for info in resultado%}
+            <tr>
+                <td>{{info.salon}}</td>
+                <td>{{info.dia}}</td>
+                <td>{{info.curso}}</td>
+                <td>
+                    {{info.inicio}} - {{info.fin}}
+                </td>
+                <td><a href="{{ url_for('eliminarTurno', id=info.id)}}">Eliminar</a></td>
+            </tr>
+    {%endfor%}
+    {%else%}
+        <h3>No hay horarios aún</h3>
+{%endif%}
+        </table> 
+    </div>
+{% endblock %}

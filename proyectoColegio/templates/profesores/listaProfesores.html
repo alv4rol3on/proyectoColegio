@@ -2,6 +2,7 @@
     content%}
     <br />
     <a class="nuevo" href="{{url_for('formularioProfesor')}}">Agregar nuevo profesor</a><br><br>
+
         <table border="0" class="Tabla">
             <tr class="encabezado2">
                 <th>ID</th>
@@ -21,7 +22,8 @@
                 <td>{{info.tutoria}}</td>
                 <td>{{info.estado}}</td>
                 <td><a href="{{url_for('deshabilitarProfesor', id=info.id)}}">X</a> |
-                     <a href="{{url_for('actProfesor', id=info.id)}}">U</a></td>
+                    <a href="{{url_for('habilitarProfesor', id=info.id)}}">A</a> |
+                    <a href="{{url_for('actProfesor', id=info.id)}}">U</a></td>
             </tr>
             {% endfor %}
         </table>

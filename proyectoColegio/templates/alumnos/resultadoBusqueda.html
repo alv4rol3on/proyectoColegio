@@ -4,7 +4,7 @@
 <a class="nuevo" href="{{url_for('formularioAlumnos')}}">Agregar nuevo alumno</a><br><br>
 <div class="search-bar">
     <form name="formSearch" method="POST" action="{{ url_for('alumnos') }}" class="search" autocomplete="off">
-      <input type="search" name="buscar" class="search__input" placeholder="Buscar por nombre" required>
+      <input type="search" name="buscar" class="search__input" placeholder="Buscar por dni" required>
       <button type="submit" class="search__btn">Buscar</button>
     </form>
 </div><br><br>

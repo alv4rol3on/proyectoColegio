@@ -10,7 +10,9 @@ tutoria = [("libre", "libre"), ("3 anhos", "3 años"), ("4 anhos", "4 años"), (
             ("3ro prim", "3ro prim"), ("4to prim", "4to prim"), ("5to prim", "5to prim"), ("6to prim", "6to prim"),
             ("1ro sec", "1ro sec"), ("2do sec", "2do sec"), ("3ro sec", "3ro sec"), ("4to sec", "4to sec"), ("5to sec", "5to sec")]
 
-materias = [("aritmetica", "aritmetica"), ("algebra", "algebra"), ("geometria", "geometria"), ("trigonometria", "trigonometria")]
+dia = [("Lunes", "Lunes"), ("Martes", "Martes"), ("Miercoles", "Miercoles"), ("Jueves", "Jueves"), ("Viernes", "Viernes")]
+
+materias = [("Aritmetica", "Aritmetica"), ("Algebra", "Algebra"), ("Geometria", "Geometria"), ("Trigonometria", "Trigonometria")]
        
 class losforms(FlaskForm):
     
@@ -40,6 +42,7 @@ class losforms(FlaskForm):
     user = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el nombre de usuario", "size":30})
     password = PasswordField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese la contraseña", "size":30})
 
+
 #filtro   
 class busqueda(FlaskForm):
     grado = SelectField("Grado del alumno: ", choices=salones)
@@ -57,3 +60,13 @@ class eventos(FlaskForm):
     lugar = StringField("Lugar del evento: ", render_kw={"placeholder": "Lugar del evento(opcional)"})
     enlace = StringField(render_kw={"placeholder": "Ingrese un enlace(opcional)"})
     boton = SubmitField("Crear evento")
+    
+#horarios
+class horarios(FlaskForm):
+    profesor = SelectField('Profesor', coerce=int)
+    salon = SelectField("Salón ", choices=salones)  
+    dia = SelectField("Dia ", choices=dia)
+    curso = SelectField("Curso ", choices=materias)
+    hora_inicio = TimeField('Hora de inicio')
+    hora_fin = TimeField('Hora de fin')
+    boton = SubmitField("Crear turno")
