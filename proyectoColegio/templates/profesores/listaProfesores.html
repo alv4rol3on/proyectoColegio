@@ -1,6 +1,9 @@
 {% extends 'base.html' %} {% block title%}Lista de profesores{% endblock %} {%block
     content%}
     <br />
+    <div class="inicio_present">
+        <h1></h1> 
+      </div><br><br> 
     <a class="nuevo" href="{{url_for('formularioProfesor')}}">Agregar nuevo profesor</a><br><br>
 
         <table border="0" class="Tabla">
@@ -28,4 +31,11 @@
             {% endfor %}
         </table>
     <br /><br />
+
+    <style>
+        .inicio_present{
+          background-color: darkolivegreen;
+          color: white;
+        }
+      </style>
     {% endblock %}

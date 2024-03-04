@@ -3,16 +3,17 @@
 {% block content %}
 
   <div class="inicio_present">
-    <h1>Bienvenido</h1><br><br>   
-  </div>
+    <h1></h1> 
+  </div><br><br>  
 
     <br><br><br><br><br><br>
   
   <div>
     <h2>Anuncios</h2><br>
-    {%if listarEventos%}
-        {%for info in listarEventos%}
+    {%if le%}
+        {%for info in le%}
         <div>
+            
             <table border="0" class="eventosInicio">
               <tr>
                 <th colspan="3">{{info.fechaCreacion}}</th>
@@ -42,5 +43,11 @@
     {%endif%}      
   </div>  
   
+  <style>
+    .inicio_present{
+      background-color: darkolivegreen;
+      color: white;
+    }
+  </style>
 
 {% endblock %}   

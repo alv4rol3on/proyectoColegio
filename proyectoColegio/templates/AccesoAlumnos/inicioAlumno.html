@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/disenhoAlumnos.css')}}"/>
+    <link rel="icon" href="{{url_for('static', filename ='img/logo.png')}}" />
+
+    <title>{% block title%}Inicio{% endblock %}</title>
+  </head>
+
+  <!--ENCABEZADO-->
+  <header>
+    <h3>COLEGIO *INSERTE NOMBRE*</h3>
+  </header>
+  <body>
+    <div class="container">
+      <nav class="links">
+        <li>Mi cuenta</li>
+        <li><a href="{{url_for('inicioAlumno')}}">Inicio</a></li>
+        <li><a href="{{url_for('alumnos')}}">Salón</a></li>
+        <li><a href="{{url_for('horario')}}">Horarios</a></li>
+      </nav>
+    </div>
+    <!--CONTENIDO-->
+    {% block content %} 
+    
+    <div class="InfoInicio">
+        <h3>AAA</h3><br><br>
+        <div class="anuncios">
+          <h2>Anuncios</h2><br>
+          {%if listarEventos%}
+              {%for info in listarEventos%}
+              <div>
+                  <table border="0" class="eventosInicio">
+                    <tr>
+                      <th class="fecha" colspan="3">{{info.fechaCreacion}}</th>
+                    </tr>
+                    <tr>
+                      <td class="titulo" colspan="3" align="center">{{info.nombreEvento}}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3">{{info.descripcion}}</td>
+                    </tr>
+                    {%if info.lugar%}
+                    <tr>
+                      <td colspan="3">Lugar: {{info.lugar}}</td>
+                    </tr>
+                    {%else%}
+                    {%endif%}
+                    <tr>
+                      <td>Día: <br>{{info.fechaEvento}}</td>
+                      <td>Hora: <br>{{info.hora}}</td>  
+                    </tr>
+                  </table>
+              </div>
+              <br>
+              {%endfor%}
+          {%else%}
+              <h3>No hay eventos aún</h3>
+          {%endif%}      
+        </div>  
+    </div>
+    
+    {% endblock %}
+  </body>
+
+  <!--PIE DE PAGINA-->
+  <footer class="footer">
+    <div class="contenedor-footer">
+      <div class="contactos">
+        <p>Contactos:</p>
+        <br />
+        <ul>
+          Correo electrónico: ascensionschool@gmail.com
+        </ul>
+        <br />
+        <ul>
+          Telefono: 977 851 254
+        </ul>
+        <br />
+        <ul>
+          Av. Los Algarrobos Mz. E parcela 4 - Villa El Salvador REFERENCIA -
+          costado MRCDO. GAMARRITA 42 Villa el Salvador, Peru
+        </ul>
+      </div>
+      <div class="redes">
+        <p>Redes sociales:</p>
+        <br />
+        <a></a>
+        <a></a>
+        <a></a>
+      </div>
+    </div>
+  </footer>
+</html>
+
+<style>
+  /*ADMIN*/
+  .container {
+    display: flex;
+    background-color: rgb(245, 86, 37);
+  }
+
+  .links {
+    display: flex;
+    background-color: rgb(0, 0, 0);
+    flex-direction: row;
+    text-align: center;
+    list-style: none;
+    
+  }
+
+  .links li a {
+    color: white;
+    text-decoration: none;
+    background-color: rgb(0, 0, 0);
+    padding: 10px 15px;
+    display: block;
+    margin-right: 60px;
+  }
+
+  .links li ul a {
+    color: white;
+    text-decoration: none;
+    background-color: rgb(0, 0, 0);
+  }
+
+  .links a:hover {
+    color: rgb(104, 191, 96);
+  }
+
+  .InfoInicio {
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+
+  .anuncios {
+    color: aliceblue;
+  }
+ 
+  .eventosInicio {
+    background-color: rgb(0, 0, 0);
+    color: black;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .titulo, .fecha{
+    background-color: blueviolet;
+    color: aliceblue;
+  }
+
+  td{
+    background-color: aliceblue;
+  }
+
+</style>

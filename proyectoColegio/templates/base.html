@@ -27,13 +27,9 @@
       </li> <br> <br> 
       <li><a href="{{url_for('alumnos')}}">Alumnos</a></li><br><br>
       <li><a href="{{url_for('profesores')}}">Profesores</a></li><br><br>
-      <li>Horarios
-        <ul>
-          <li><a href="{{url_for('crearTurno')}}">Crear turnos</a></li>
-          <li><a href="{{url_for('horario')}}">Visualizar horarios</a></li>
-        </ul>
-      </li> <br> <br>
-      <li><a href="{{url_for('eventosPagina')}}">Eventos escolares</a></li><br><br>
+      <li><a href="{{url_for('horario')}}">Horarios</a></li> <br> <br>
+      <li><a href="{{url_for('eventosPagina')}}">Eventos escolares</a></li><br><br><br><br>
+      <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li><br><br>
     </nav>
 
     <!--CONTENIDO-->

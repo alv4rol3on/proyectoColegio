@@ -12,7 +12,7 @@ tutoria = [("libre", "libre"), ("3 anhos", "3 años"), ("4 anhos", "4 años"), (
 
 dia = [("Lunes", "Lunes"), ("Martes", "Martes"), ("Miercoles", "Miercoles"), ("Jueves", "Jueves"), ("Viernes", "Viernes")]
 
-materias = [("Aritmetica", "Aritmetica"), ("Algebra", "Algebra"), ("Geometria", "Geometria"), ("Trigonometria", "Trigonometria")]
+materias = [("Aritmetica", "Aritmetica"), ("Algebra", "Algebra"), ("Geometria", "Geometria"), ("Trigonometria", "Trigonometria"), ("Biologia", "Biología"), ("Quimica", "Quimica"), ("Ed. física", "Ed. física")]
        
 class losforms(FlaskForm):
     
@@ -63,10 +63,15 @@ class eventos(FlaskForm):
     
 #horarios
 class horarios(FlaskForm):
-    profesor = SelectField('Profesor', coerce=int)
+    profesor = SelectField('Profesor', coerce=str)
     salon = SelectField("Salón ", choices=salones)  
     dia = SelectField("Dia ", choices=dia)
     curso = SelectField("Curso ", choices=materias)
-    hora_inicio = TimeField('Hora de inicio')
-    hora_fin = TimeField('Hora de fin')
+    hora_inicio = TimeField('Hora de inicio', validators=[DataRequired()])
+    hora_fin = TimeField('Hora de fin', validators=[DataRequired()])
     boton = SubmitField("Crear turno")
+    
+class login(FlaskForm):    
+    usuario = StringField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese el usuario"})
+    password = PasswordField(validators=[DataRequired()], render_kw={"placeholder": "Ingrese la contraseña"})
+    boton = SubmitField("Iniciar sesión")

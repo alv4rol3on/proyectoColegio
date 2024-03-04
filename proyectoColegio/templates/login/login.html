@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COLEGIO</title>
+  </head>
+  <body>
+
+    <style>
+      body {
+        background-color: cadetblue;
+      }
+    </style>
+
+    {% for m in get_flashed_messages() %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>{{m}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    <br><br>
+
+    <form method="POST" action="/login">
+      <input type="text" name="usuario" placeholder="usuario">
+      <label for="usuario"></label><br>
+      <input type="password" name="password" placeholder="contraseña">
+      <label for="password"></label><br>
+      <button type="submit">Iniciar sesión</button>
+    </form>
+  </body>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <!--PIE DE PAGINA-->
+  <footer class="footer">
+    <div class="contenedor-footer">
+      <div class="contactos">
+        <p>Contactos:</p>
+        <br />
+        <ul>
+          Correo electrónico: ascensionschool@gmail.com
+        </ul>
+        <br />
+        <ul>
+          Telefono: 977 851 254
+        </ul>
+        <br />
+        <ul>
+          Av. Los Algarrobos Mz. E parcela 4 - Villa El Salvador REFERENCIA -
+          costado MRCDO. GAMARRITA 42 Villa el Salvador, Peru
+        </ul>
+      </div>
+      <div class="redes">
+        <p>Redes sociales:</p>
+        <br />
+        <a></a>
+        <a></a>
+        <a></a>
+      </div>
+    </div>
+  </footer>
+</html>

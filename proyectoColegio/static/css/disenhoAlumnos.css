@@ -1,0 +1,34 @@
+body {
+    background-image: url(../img/fondoAlumno.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+header {
+    background-color: rgb(129, 193, 0);
+    text-align: center;
+    padding: 50px;
+    color: rgb(0, 0, 0);
+}
+
+
+
+footer{
+    color: white;
+    background-color: black;  
+    padding: 50px 0;
+}
+
+.contenedor-footer {
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.contactos {
+    color: white; 
+}
+
+.redes {
+    width: 25%;
+    padding: 0 50px;
+}

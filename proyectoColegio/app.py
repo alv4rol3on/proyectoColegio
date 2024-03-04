@@ -4,6 +4,8 @@ from flask_wtf import *
 from forms import *
 from datetime import date
 from funciones import *
+from funcionesLogin import *
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikeysecreta'
@@ -13,6 +15,7 @@ salones = ["3 años", "4 años", "5 años", "1ro prim", "2do prim", "3ro prim", 
 materias = ["Aritmetica", "Algebra", "Geometria", "Trigonometria", "Rz. Matemático", "Historia del Perú", "Historia Universal", "Geografía", "Cívica",
             "Biología", "Química", "Gramática", "Literatura", "Rz. Verbal", "Plan Lector", "Computo", "Arte", "Danza", "Ed. Física"]
 dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
+
 #conexion a base de datos
 def conectar():
     conexion = mysql.connector.connect(
@@ -24,10 +27,11 @@ def conectar():
     cursor = conexion.cursor(dictionary=True)
     return conexion, cursor
 
+#modelo de usuario
 
-
+            
 #PAGINAS CON FORMULARIO ALUMNO
-@app.route("/agregarAlumno", methods=["GET", "POST"])
+@app.route("/admin/agregarAlumno", methods=["GET", "POST"])
 def formularioAlumnos():
     aga = losforms(request.form)
     if request.method == "POST" and aga.validate:
@@ -39,34 +43,36 @@ def formularioAlumnos():
         grado = aga.grado.data
         seccion = aga.seccion.data
         
+        idAlumnoGenerado = generadorID_Alumno(nombre, apellidoPa, apellidoMa)
+        
         # registro en la base de datos
         try:
             conexion, cursor = conectar()
             cursor.execute(
                 f"""
-                INSERT INTO `proyectocole`.`alumno` (`nombreCompleto`, `tipoUsuario`, `dni`, `telf`, `grado`, `seccion`, `estado`)
-                VALUES ('{aga.apellidoPaterno.data + " "+ aga.apellidoMaterno.data+ ", " + aga.nombres.data}', '{3}', '{aga.dni.data}', '{aga.nro.data}', '{aga.grado.data}', '{aga.seccion.data}', {1});
+                INSERT INTO `proyectocole`.`alumno` (`nombreCompleto`,`usuario`, `tipoUsuario`, `dni`, `telf`, `grado`, `seccion`, `estado`)
+                VALUES ('{aga.apellidoPaterno.data + " "+ aga.apellidoMaterno.data+ ", " + aga.nombres.data}', '{idAlumnoGenerado}', '{3}', '{aga.dni.data}', '{aga.nro.data}', '{aga.grado.data}', '{aga.seccion.data}', {1});
                 """)
             conexion.commit()
-        except:
-            print("ERROR A: ERROR AL INSERTAR UN NUEVO ALUMNO")
+        except Exception as e:
+                    print(f"ERROR EN REGISTRAR UN ALUMNO: {str(e)}") 
         finally:
             conexion.close()
             return redirect(url_for("alumnos"))
         
     return render_template("alumnos/agregarAlumno.html", aga=aga) 
 
-@app.route("/alumnosX/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/alumnosX/<int:id>", methods=["GET", "POST"])
 def deshabilitarAlumno(id):
     deshAlumno(id)
     return redirect(url_for("alumnos"))
 
-@app.route("/alumnosA/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/alumnosA/<int:id>", methods=["GET", "POST"])
 def habilitarAlumno(id):
     habAlumno(id)
     return redirect(url_for("alumnos"))
 
-@app.route("/alumnos", methods=["GET", "POST"])     
+@app.route("/admin/alumnos", methods=["GET", "POST"])     
 def alumnos(): 
     if request.method=="POST":
         texto = request.form['buscar']
@@ -86,7 +92,7 @@ def alumnos():
         listado = listarAlumnos(grado, seccion, estado) 
     return render_template("alumnos/listaAlumnos.html", listado = listado, salones=salones)
  
-@app.route("/actualizarAlumno/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/actualizarAlumno/<int:id>", methods=["GET", "POST"])
 def actAlumnos(id):
     act = losforms(request.form)
     if request.method == "POST" and act.validate:
@@ -120,7 +126,7 @@ def actAlumnos(id):
 
                    
 #PAGINAS CON FORMULARIO PROFESOR
-@app.route("/agregarProfesor", methods=["GET", "POST"])
+@app.route("/admin/agregarProfesor", methods=["GET", "POST"])
 def formularioProfesor():
     agp = losforms(request.form)
     if request.method == "POST" and agp.validate:
@@ -152,17 +158,17 @@ def formularioProfesor():
  
     return render_template("profesores/agregarProfesor.html", agp=agp)
 
-@app.route("/profesores", methods=["GET", "POST"])     
+@app.route("/admin/profesores", methods=["GET", "POST"])     
 def profesores():
     listadoProfesores = listarProfesor()
     return render_template("profesores/listaProfesores.html", listadoProfesores = listadoProfesores)
 
-@app.route("/ProfesorX/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/ProfesorX/<int:id>", methods=["GET", "POST"])
 def deshabilitarProfesor(id):
     deshProfesor(id)
     return redirect(url_for("profesores"))
 
-@app.route("/actualizarProfesor/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/actualizarProfesor/<int:id>", methods=["GET", "POST"])
 def actProfesor(id):
     acp = losforms(request.form)
     if request.method == "POST" and acp.validate:
@@ -194,7 +200,7 @@ def actProfesor(id):
  
     return render_template("profesores/actualizarProfesor.html", acp=acp)
 
-@app.route("/ProfesorA/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/ProfesorA/<int:id>", methods=["GET", "POST"])
 def habilitarProfesor(id):
     habProfesor(id)
     return redirect(url_for("profesores"))
@@ -202,13 +208,13 @@ def habilitarProfesor(id):
     
   
 #PAGINA EVENTOS
-@app.route("/eventos")
+@app.route("/admin/eventos")
 def eventosPagina():
     listaEventos = listarEventos()
     
     return render_template("eventos/eventos.html", listarEventos=listaEventos)
 
-@app.route("/eventos/crearEvento", methods=["GET", "POST"])
+@app.route("/admin/eventos/crearEvento", methods=["GET", "POST"])
 def crearEventos():
     ev = eventos(request.form)
     if request.method == "POST" and ev.validate:
@@ -244,28 +250,28 @@ def crearEventos():
         
     return render_template("eventos/crearEvento.html", ev=ev)
 
-@app.route("/eventosX/<int:id>")
+@app.route("/admin/eventosX/<int:id>")
 def deshabilitarEvento(id):
     deshEvento(id)
     return redirect(url_for("eventosPagina"))
 
-@app.route("/eventosA/<int:id>")
+@app.route("/admin/eventosA/<int:id>")
 def habilitarEvento(id):
     habEvento(id)
     return redirect(url_for("eventosPagina"))
 
-@app.route("/eventosB/<int:id>")
+@app.route("/admin/eventosB/<int:id>")
 def eliminarEvento(id):
     borrarEvento(id)
     return redirect(url_for("eventosPagina"))
 
 
 #HORARIOS
-@app.route("/horario/crear_turno", methods=["GET", "POST"])
-def crearTurno():
+@app.route("/admin/horarios", methods=["GET", "POST"])  
+def horario():
     hr = horarios()
     listadoProfesores = profesoresHabilitados()
-    hr.profesor.choices = [(profesor['id'], profesor['nombreCompleto']) for profesor in listadoProfesores]
+    hr.profesor.choices = [(profesor['nombreCompleto'], profesor['nombreCompleto']) for profesor in listadoProfesores]
     if request.method == "POST" and hr.validate:
         profesor = hr.profesor.data
         salon = hr.salon.data
@@ -276,47 +282,76 @@ def crearTurno():
         
         #BBDD
         try:
+            # CONSULTA 1
             conexion, cursor = conectar()
             consulta = """
-                SELECT * FROM `proyectocole`.`horario` WHERE 
-                `salon` = %s AND `dia` = %s AND
-                `inicio` = %s AND `fin` = %s;
+                SELECT * FROM `proyectocole`.`horario` WHERE `profesor` = %s
+                AND `dia` = %s AND `inicio` = %s AND `fin` = %s;
             """
-            valores = (hr.salon.data, hr.dia.data, hr.hora_inicio.data, hr.hora_fin.data)
+            valores = (hr.profesor.data, hr.dia.data, hr.hora_inicio.data, hr.hora_fin.data)
             cursor.execute(consulta, valores)
             resultado = cursor.fetchall()
 
             if len(resultado) == 0:
-                consulta_form = """
-                INSERT INTO `proyectocole`.`horario`
-                (`profesor`, `salon`, `dia`, `curso`, `inicio`, `fin`)
-                VALUES
-                (%s, %s, %s, %s, %s, %s);                  
-                """
-                valores_form = (hr.profesor.data, hr.salon.data, hr.dia.data, hr.curso.data, hr.hora_inicio.data, hr.hora_fin.data)
-                cursor.execute(consulta_form, valores_form)
-                conexion.commit()
+                # CONSULTA 2
+                try:
+                    consulta2 = """
+                        SELECT * FROM `proyectocole`.`horario` WHERE `salon` = %s
+                        AND `dia` = %s AND `inicio` = %s AND `fin` = %s;
+                    """
+                    valores2 = (hr.salon.data, hr.dia.data, hr.hora_inicio.data, hr.hora_fin.data)
+                    cursor.execute(consulta2, valores2)
+                    resultado = cursor.fetchall()
+
+                    if len(resultado) == 0:
+                        try:
+                            # INSERTAR
+                            consulta_form = """
+                                INSERT INTO `proyectocole`.`horario`
+                                (`profesor`, `salon`, `dia`, `curso`, `inicio`, `fin`)
+                                VALUES
+                                (%s, %s, %s, %s, %s, %s);
+                            """
+                            valores_form = (hr.profesor.data, hr.salon.data, hr.dia.data, hr.curso.data, hr.hora_inicio.data, hr.hora_fin.data)
+                            cursor.execute(consulta_form, valores_form)
+                            conexion.commit()
+
+                        except Exception as e:
+                            print(f"ERROR EN REGISTRAR UN HORARIO: {str(e)}")
+
+                        finally:
+                            print("CONSULTA 3 TERMINADA")
+                            return redirect(url_for("horario"))
+
+                    else:
+                        print("Coincidencias encontradas en: salon, dia y horas")
+                        flash("NO SE PUEDE REGISTRAR: Coincidencias encontradas en el salón y horas seleccionadas")
+
+                except Exception as e:
+                    print(f"ERROR EN REGISTRAR UN HORARIO: {str(e)}")
+
+                finally:
+                    print("CONSULTA 2 TERMINADA")
+
             else:
-                print("Conicidencias encontradas")
-        
-            conexion.close()  
+                print("Coincidencias encontradas en: profesor, dia y horas")
+                flash("NO SE PUEDE REGISTRAR: Coincidencias encontradas en profesor, dia y horas")
+
         except Exception as e:
             print(f"ERROR EN REGISTRAR UN HORARIO: {str(e)}")
+
         finally:
-            return redirect(url_for("inicio"))
-
-    return render_template("horarios/pagHorarios.html", listadoProfesores = listadoProfesores, hr=hr)
-
-@app.route("/horarios", methods=["GET", "POST"])  
-def horario():
+            print("CONSULTA TERMINADA")
+            conexion.close()
+    
     if request.method == "GET":
         grado = request.args.get('grado', default=None, type=str)
         dia = request.args.get('dia', default=None, type=str)
         resultado = horario_salon(grado, dia)
    
-    return render_template("/horarios/horariosSalon.html", resultado=resultado, salones=salones, dias=dias) 
+    return render_template("/horarios/horariosSalon.html", resultado=resultado, salones=salones, dias=dias, listadoProfesores = listadoProfesores, hr=hr) 
 
-@app.route("/horarios/eliminar/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/horarios/eliminar/<int:id>", methods=["GET", "POST"])
 def eliminarTurno(id):
     eliminar_horario(id)
     return redirect(url_for("horario"))
@@ -330,25 +365,27 @@ def crearAdmin():
         nombres = adm.nombres.data
         apellidoPa = adm.apellidoPaterno.data
         apellidoMa = adm.apellidoMaterno.data
-        user = adm.user.data 
         password = adm.password.data
 
+        idGenerado = generadorID_Admin(nombres, apellidoPa, apellidoMa)
+        
         try:
             conexion, cursor = conectar()
             cursor.execute(
                 f"""
                 INSERT INTO `proyectocole`.`admin`
-                (`nombre`,`apellido`,`usuario`,`password`)
+                (`nombre`,`apellido`,`usuario`,`password`,`estado`)
                 VALUES
-                ('{adm.nombres.data}','{adm.apellidoPaterno.data + " " + adm.apellidoMaterno.data}','{adm.user.data }','{adm.password.data}');
+                ('{adm.nombres.data}','{adm.apellidoPaterno.data + " " + adm.apellidoMaterno.data}','{idGenerado}','{adm.password.data}',{1});
                 """
             )
             conexion.commit()  
-        except:
-            print("ERROR EN EL REGISTRO DE ADMIN")    
+        except Exception as e:
+                    print(f"ERROR EN REGISTRAR UN ADMINISTRADOR: {str(e)}")  
+                    return redirect(url_for("crearAdmin"))
         finally:
             conexion.close()
-            return redirect(url_for("inicio"))  
+            return redirect(url_for("listadeAdmin"))  
         
     return render_template("adminpaginas/formAdmin.html", adm=adm)    
  
@@ -373,9 +410,10 @@ def actAdmin(id):
     if request.method=="POST" and adm.validate:
         nombres = adm.nombres.data
         apellidoPa = adm.apellidoPaterno.data
-        apellidoMa = adm.apellidoMaterno.data
-        user = adm.user.data 
+        apellidoMa = adm.apellidoMaterno.data 
         password = adm.password.data
+
+        idGenerado = generadorID_Alumno(nombres, apellidoPa, apellidoMa)
 
         try:
             conexion, cursor = conectar()
@@ -385,7 +423,6 @@ def actAdmin(id):
                 SET
                 `nombre` = '{adm.nombres.data}',
                 `apellido` = '{adm.apellidoPaterno.data + " " + adm.apellidoMaterno.data}',
-                `usuario` = '{adm.user.data}',
                 `password` = '{adm.password.data}'
                 WHERE `id` = {id};
                 """
@@ -398,18 +435,90 @@ def actAdmin(id):
             return redirect(url_for("listadeAdmin"))  
         
     return render_template("adminpaginas/actualizarAdmin.html", adm=adm)    
+        
+@app.route("/admin/inicio", methods=["GET", "POST"])
+def inicio():
+    le = eventosInicio()
+    return render_template("inicio.html", le = le)    
     
 #paginas enlace
 @app.route("/", methods=["GET", "POST"])
-def inicio():
+def index():
+    return redirect(url_for("paglogin"))
+ 
+#ACCESO ALUMNOS
+@app.route("/alumnos/inicio", methods=["GET", "POST"])
+def inicioAlumno():
     listaEventos = eventosInicio()
-    return render_template("inicio.html", listarEventos=listaEventos)
+    return render_template("AccesoAlumnos/inicioAlumno.html", listarEventos=listaEventos)
+
+@app.route("/acceso-restringido")
+def acceso_restringido_admin():
+    return "Acceso restringido, solo accesible a usuarios de tipo administrador"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#accesos
+@app.route("/login", methods=["GET", "POST"])
+def paglogin():
+    if request.method == "POST":
+        usuario = request.form['usuario']
+        password = request.form['password']
+        
+        #BBDD
+        try:
+            conexion, cursor = conectar()
+            consulta = (f"""SELECT * FROM `proyectocole`.`admin`
+                         WHERE `usuario` = '{usuario}' AND `password` = '{password}';""")
+            cursor.execute(consulta)
+            resultadoAsc = cursor.fetchone()
+                    
+            if resultadoAsc:
+                print("LOGUEO EXITOSO DE TIPO: ADMIN")
+                return redirect(url_for("inicio"))
+            else:
+                print("Usuario o contraseña invalidas")  
+                flash("Usuario o contraseña invalidas",'danger')   
+                               
+        except Exception as e:
+            print(f"ERROR EN EL LOGUEO: {str(e)}")
+        finally:  
+            conexion.close()      
+            print("INTENTO DE LOGUEO FINALIZADO")
+    
+    return render_template("login/login.html")
  
- 
+@app.route("/logout")
+def logout():
+    return redirect(url_for('paglogin')) 
  
 @app.errorhandler(404)
 def no_encontrado(error):
-    return redirect(url_for('inicio'))  
+    return redirect(url_for('paglogin'))  
 
 if __name__ == '__main__':
     app.run(debug=True)

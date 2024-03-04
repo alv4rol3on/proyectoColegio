@@ -41,7 +41,7 @@
 
         <table border="0" class="Tabla">
             <tr class="encabezado">
-                <th>ID</th>
+                <th>ID de estudiante</th>
                 <th>Nombre completo</th>
                 <th>DNI</th>
                 <th>Telefono del apoderado</th>
@@ -52,7 +52,7 @@
             </tr>
             {%for info in listado%}
             <tr>
-                <td>{{info.id}}</td>
+                <td>{{info.usuario}}</td>
                 <td>{{info.nombreCompleto}}</td>
                 <td>{{info.dni}}</td>
                 <td>{{info.telf}}</td>

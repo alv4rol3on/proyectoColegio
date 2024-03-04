@@ -4,19 +4,17 @@
 <h1>Lista de administradores</h1><br><br>
         <table border="0" class="Tabla">
             <tr class="encabezado">
-                <th>ID</th>
+                <th>Usuario</th>
                 <th>Nombres </th>
                 <th>Apellidos</th>
-                <th>Nombre de usuario</th>
                 <th>Estado</th>
                 <th>Acciones</th>                             
             </tr>
             {%for info in listaAdmin%}
             <tr>
-                <td>{{info.id}}</td>
+                <td>{{info.usuario}}</td>
                 <td>{{info.nombre}}</td>
                 <td>{{info.apellido}}</td>
-                <td>{{info.usuario}}</td>
                 <td>{{info.estado}}</td>
                 <td><a href="{{url_for('habilitarAdmin', id=info.id)}}">A</a> |
                     <a href="{{url_for('deshabilitarAdmin', id=info.id)}}">X</a> |

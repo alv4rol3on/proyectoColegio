@@ -70,36 +70,31 @@ def listarAlumnos(grado=None, seccion=None, estado=None):
     if grado and seccion and estado:
         cursor.execute(
             f"""
-            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            SELECT * FROM `proyectocole`.`alumno`
             WHERE `alumno`.`grado` = %s AND `alumno`.`seccion` = %s and `alumno`.`estado` = %s;
             """, (grado, seccion, estado))
     elif grado:
         cursor.execute(
             f"""
-            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            SELECT * FROM `proyectocole`.`alumno`
             WHERE `alumno`.`grado` = %s;
             """, (grado,))
     elif seccion:
         cursor.execute(
             f"""
-            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            SELECT * FROM `proyectocole`.`alumno`
             WHERE `alumno`.`seccion` = %s;
             """, (seccion,))
     elif estado:
         cursor.execute(
             f"""
-            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`
+            SELECT * FROM `proyectocole`.`alumno`
             WHERE `alumno`.`estado` = %s;
             """, (estado,))
     else:
         cursor.execute(
             f"""
-            SELECT `alumno`.`id`, `alumno`.`nombreCompleto`, `alumno`.`dni`, `alumno`.`telf`,
-            `alumno`.`grado`, `alumno`.`seccion`, `alumno`.`estado` FROM `proyectocole`.`alumno`;
+            SELECT * FROM `proyectocole`.`alumno`;
             """)
 
     lista = cursor.fetchall()  
